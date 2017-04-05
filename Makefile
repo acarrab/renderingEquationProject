@@ -1,7 +1,7 @@
-CC = g++
-# CC = clang++
-
-
+CC = g++ -std=c++11 -I/usr/include -I/usr/X11R6/include -L/usr/lib -L/usr/X11R6/lib -L/usr/lib64 -O0
+# # CC = clang++
+LDFLAGS = -lGLEW -lGL -lGLU -lX11 -lpthread -lXrandr -lglut -lXi -lXmu -lm -lexpat
+CXXFLAGS= -g
 
 OBJ_LOC = ./build
 INCLUDE_LOC = ./include
@@ -14,14 +14,19 @@ SOURCES = $(shell find $(CPP_LOC)/*.cpp)
 TO_OBJS = $(patsubst $(CPP_LOC)/%.cpp, $(OBJ_LOC)/%.o, $(SOURCES))
 OBJS = $(patsubst $(OBJ_LOC)/main.o, , $(TO_OBJS))
 
-
 $(OBJ_LOC)/%.o: $(CPP_LOC)/%.cpp $(INCLUDE_LOC)/%.h
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CC) $(CXXFLAGS) -c $< -o $@
 
-$(EXEC): $(OBJS)
-	$(CXX) $(CXXFLAGS) $(CPP_LOC)/main.cpp -o $@ $(OBJS) $(LDFLAGS)
-test:
-	$(shell cat $(CPP_LOC)/gamedata.cpp | gawk 'match($0, /include[ ]*\"(.*)\"/, ary){ print ary[1] }')
+compile: $(OBJS)
+	$(CC) $(CXXFLAGS) $(CPP_LOC)/main.cpp -o $(EXEC) $(OBJS) $(LDFLAGS)
+$(EXEC): compile
+	./run
+
+test: $(OBJS)
+	echo $(src)
+
+
+
 clean:
 	rm -rf $(OBJS)
 	rm -rf $(EXEC)

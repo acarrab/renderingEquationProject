@@ -1,13 +1,13 @@
 #ifndef __GAMEDATA_H__
 #define __GAMEDATA_H__
-#include "common.h"
+#include <iostream>
 #include "parseXML.h"
 
-class Gamedata {
+class Data {
 public:
-  static Gamedata& getInstance();
-  static Gamedata& g() { return Gamedata::getInstance(); }
-  ~Gamedata();
+  static Data& getInstance();
+  static Data& g() { return Data::getInstance(); }
+  ~Data();
   void displayData() const;
 
   bool getXmlBool(const std::string&) const;
@@ -20,10 +20,10 @@ public:
 
 private:
   ParseXML parser;
-  const std::map<std::string, std::string> gameData;
+  const std::map<std::string, std::string> savedData;
 
-  Gamedata(const std::string& fn = "xmlSpec/game.xml");
-  Gamedata(const Gamedata&);
-  Gamedata& operator=(const Gamedata&);
+  Data(const std::string& fn = "xmlSpec/settings.xml");
+  Data(const Data&);
+  Data& operator=(const Data&);
 };
 #endif
