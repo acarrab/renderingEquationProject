@@ -1,7 +1,7 @@
 CC = g++ -std=c++11 -I/usr/include -I/usr/X11R6/include -L/usr/lib -L/usr/X11R6/lib -L/usr/lib64 -O0
 # # CC = clang++
 LDFLAGS = -lGLEW -lGL -lGLU -lX11 -lpthread -lXrandr -lglut -lXi -lXmu -lm -lexpat
-CXXFLAGS= -g
+CXXFLAGS= -g -W -Wall -std=c++11 -Weffc++ -Wextra -pedantic
 
 OBJ_LOC = ./build
 INCLUDE_LOC = ./include
@@ -19,14 +19,12 @@ $(OBJ_LOC)/%.o: $(CPP_LOC)/%.cpp $(INCLUDE_LOC)/%.h
 
 compile: $(OBJS)
 	$(CC) $(CXXFLAGS) $(CPP_LOC)/main.cpp -o $(EXEC) $(OBJS) $(LDFLAGS)
+
 $(EXEC): compile
 	./run
 
 test: $(OBJS)
 	echo $(src)
-
-
-
 clean:
 	rm -rf $(OBJS)
 	rm -rf $(EXEC)
@@ -34,4 +32,3 @@ clean:
 	rm -rf $(INCLUDE_LOC)/*~
 	rm -rf xmlSpec/*~
 	rm -rf *~
-	rm frames/*.bmp

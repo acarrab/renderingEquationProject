@@ -10,21 +10,16 @@
 #include <vector>
 #include <string>
 #include "../include/winData.h"
-
-
-
-
+#include "../include/objectHandler.h"
 
 void displayHander() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glBegin(GL_TRIANGLES);
-  glVertex3f(-0.5,-0.5,0.0);
-  glVertex3f(0.5,0.0,0.0);
-  glVertex3f(0.0,0.5,0.0);
   glEnd();
 
   glutSwapBuffers();
 }
+
 void keyboardHandler(unsigned char key, int x, int y) {
   switch(key) {
   case 'q':
@@ -37,7 +32,7 @@ void keyboardHandler(unsigned char key, int x, int y) {
 
 int main(int argc, char *argv[]) {
   WinData w;
-  ObjHandler("teapot");
+  obj_data *d = ObjHandler::getObjDataOf("test");
   glutInit(&argc, argv);
   glutInitWindowPosition(w[0], w[1]);
   glutInitWindowSize(w[2], w[3]);

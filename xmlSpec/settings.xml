@@ -1,6 +1,5 @@
 <?xml version = "1.0"?>
 <Data>
-<test>test text</test>
 <window>
   <x>100</x>
   <y>100</y>
@@ -9,5 +8,8 @@
   <title>Rendering Equation Approximation</title>
 </window>
 <teapot>
-  <fileName>teapot.605.obj</fileName>
+  <fileName>resources/teapot.605.obj</fileName>
 </teapot>
+<test>
+  <fileName>resources/test.txt</fileName>
+</test>
