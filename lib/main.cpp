@@ -11,6 +11,10 @@
 #include <string>
 #include "../include/winData.h"
 
+
+
+
+
 void displayHander() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glBegin(GL_TRIANGLES);
@@ -33,6 +37,7 @@ void keyboardHandler(unsigned char key, int x, int y) {
 
 int main(int argc, char *argv[]) {
   WinData w;
+  ObjHandler("teapot");
   glutInit(&argc, argv);
   glutInitWindowPosition(w[0], w[1]);
   glutInitWindowSize(w[2], w[3]);

@@ -1,0 +1,18 @@
+
+struct obj_data {
+  std::vector< glm::vec3 >  v;
+  std::vector< glm::vec2 >  vt;
+  std::vector< glm::vec3 >  vn;
+  std::vector< glm::vec3 >  f;
+};
+
+class ObjHandler {
+  //flyweight
+  static std::map<std::string, obj_data> objects;
+  static obj_data getObjDataOf(std::string s) {
+    if (objects.find(s)) return objects.find(s)->second;
+    obj_data d;
+
+  }
+
+};
