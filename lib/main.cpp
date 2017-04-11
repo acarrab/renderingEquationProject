@@ -85,7 +85,7 @@ void keyboardHandler(unsigned char key, int x, int y) {
 
 int main(int argc, char *argv[]) {
   WinData w;
-  //obj_data *d = ObjHandler::getObjDataOf("test");
+  obj_data *d = ObjHandler::getObjDataOf("teapot");
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_RGBA|GLUT_DEPTH|GLUT_DOUBLE|
 		      GLUT_MULTISAMPLE|GLUT_ACCUM);
