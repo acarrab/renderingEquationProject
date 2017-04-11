@@ -7,9 +7,16 @@
   <height>720</height>
   <title>Rendering Equation Approximation</title>
 </window>
+
 <teapot>
   <fileName>resources/teapot.605.obj</fileName>
 </teapot>
+
 <test>
   <fileName>resources/test.txt</fileName>
 </test>
+
+<shader>
+  <vert>resources/phong.vert</vert>
+  <frag>resources/phong.frag</frag>
+</shader>

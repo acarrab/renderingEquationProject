@@ -1,0 +1,18 @@
+#ifndef __SHADERHANDLER_H__
+#define __SHADERHANDLER_H__
+#include <fstream>
+#include <string>
+#include <vector>
+#include <map>
+#include <sstream>
+#include <iostream>
+#include "data.h"
+
+class ShaderHandler {
+  //flyweight
+  static std::map<std::string, obj_data> objects;
+public:
+  static obj_data* getObjDataOf(std::string objectName);
+};
+
+#endif
