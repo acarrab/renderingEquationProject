@@ -2,29 +2,38 @@
 
 std::map<std::string, obj_data> ObjHandler::objects = std::map<std::string, obj_data>();
 
+void addFloats(std::vector<float> &fvec, std::string s) {
+  std::stringstream ss(s);
+  float tmp;
+  while (ss >> tmp) fvec.push_back(tmp);
+}
+void addFace(std::vector< std::vector<int> > &faces, std::string s) {
+  std::stringstream stream(s);
+  while(std::getline(stream, s, ' ')) {
+    std::stringstream stream2(s);
+    std::vector<int> oneFace;
+    while (std::getline(stream2, s, '/')) oneFace.push_back(stoi(s));
+    faces.push_back(oneFace);
+  }
+}
 read_data ObjHandler::getDataFromFile(std::string fileName) {
   read_data d;
   std::ifstream fin(fileName);
-  int iTmp; float fTmp;
   for (std::string s1, s2; std::getline(fin, s1, ' ');) {
     std::getline(fin, s2);
-    std::stringstream stream1(s2);
-    if (s1 == "v")  while (stream1 >> fTmp) d.v.push_back(fTmp);
+    switch(s1) {
+    case "v": addFloats(d.v, s2); break;
+    case "vt": addFloats(d.vn, s2); break;
+    case "vx": addFloats(d.vx, s2); break;
+    case "vy": addFloats(d.vy, s2); break;
+    case "f": addFace(d.f, s2); break;
+    }
+    if (s1 == "v")  addFloats(d.v, s2);
     else if (s1 == "vt") while (stream1 >> fTmp) d.vt.push_back(fTmp);
     else if (s1 == "vn") while (stream1 >> fTmp) d.vn.push_back(fTmp);
     else if (s1 == "vx") while (stream1 >> fTmp) d.vx.push_back(fTmp);
     else if (s1 == "vy") while (stream1 >> fTmp) d.vy.push_back(fTmp);
     else if (s1 == "f")  {
-      for (int i = 0; i < 3; i++) {
-	std::getline(stream1, s2, ' ');
-	std::stringstream stream2(s2);
-	std::vector<int> oneFace;
-	for (int j = 0; j < 3; j++) {
-	  std::getline(stream2, s2, '/');
-	  oneFace.push_back(stoi(s2));
-	}
-	d.f.push_back(oneFace);
-      }
     }
     else if (s1[0] != '#') {
       std::cerr << "Unknown line: " << s1 << " " << stream1.str() << std::endl;
