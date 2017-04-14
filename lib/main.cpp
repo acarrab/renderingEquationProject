@@ -85,7 +85,6 @@ void keyboardHandler(unsigned char key, int x, int y) {
 
 int main(int argc, char *argv[]) {
   WinData w;
-  obj_data *d = ObjHandler::getObjDataOf("teapot");
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_RGBA|GLUT_DEPTH|GLUT_DOUBLE|
 		      GLUT_MULTISAMPLE|GLUT_ACCUM);
@@ -96,9 +95,7 @@ int main(int argc, char *argv[]) {
   createViewVolume();
   createLights();
 
-
-
-
+  obj_data *od = ObjHandler::getInstance().getObjDataOf("teapot");
   ShaderHandler &shaderProgramHandler = ShaderHandler::getInstance();
 
   glutDisplayFunc(displayHander);
