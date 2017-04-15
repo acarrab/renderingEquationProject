@@ -13,31 +13,29 @@
 #include <map>
 #include <sstream>
 #include <iostream>
+#include <cstdio>
 #include <algorithm>
 #include "data.h"
 struct obj_data {
-  GLfloat *data; //v is index 0
+  std::vector<GLfloat> data; //v is index 0
   int normalIndex;  //vn
-  int tangentIndex; //vx,vy
   int textureIndex; //vt
+  int tangentIndexX; //vx
+  int tangentIndexY; //vy
+  int vertices;
+  GLuint pointer;
 };
 struct read_data {
-  std::vector< float >  v;
-  std::vector< float >  vt;
-  std::vector< float >  vn;
-  std::vector< float >  vx, vy; //tangents per vertex
-  std::vector< std::vector<int> >  f;
+  std::vector< std::vector<float> > v, vt, vn, vx, vy;
+  std::vector< std::vector< std::vector<int> > > f;
 };
 class ObjHandler {
   //flyweight
-  static std::map<std::string, obj_data> objects;
-  static read_data getDataFromFile(std::string fileName);
+  std::map<std::string, obj_data> objects;
+  read_data getDataFromFile(std::string fileName);
 public:
-  static obj_data* getObjDataOf(std::string objectName);
-  static void cleanMemory() {
-    for (auto s_od : objects) delete[] s_od.second.data;
-    objects.clear();
-  }
+  static ObjHandler& getInstance();
+  obj_data* getObjDataOf(std::string objectName);
 };
 
 #endif

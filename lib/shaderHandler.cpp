@@ -34,7 +34,7 @@ ShaderHandler::ShaderHandler() {
   int logLength;
 
   // Compile vertex shader
-  std::cout << "Compiling vertex shader." << std::endl;
+  std::cerr << "Compiling vertex shader." << std::endl;
   glShaderSource(vertShader, 1, &vertShaderSrc, NULL);
   glCompileShader(vertShader);
 
@@ -43,10 +43,10 @@ ShaderHandler::ShaderHandler() {
   glGetShaderiv(vertShader, GL_INFO_LOG_LENGTH, &logLength);
   std::vector<char> vertShaderError((logLength > 1) ? logLength : 1);
   glGetShaderInfoLog(vertShader, logLength, NULL, &vertShaderError[0]);
-  std::cout << &vertShaderError[0] << std::endl;
+  std::cerr << &vertShaderError[0] << std::endl;
 
   // Compile fragment shader
-  std::cout << "Compiling fragment shader." << std::endl;
+  std::cerr << "Compiling fragment shader." << std::endl;
   glShaderSource(fragShader, 1, &fragShaderSrc, NULL);
   glCompileShader(fragShader);
 
@@ -55,9 +55,9 @@ ShaderHandler::ShaderHandler() {
   glGetShaderiv(fragShader, GL_INFO_LOG_LENGTH, &logLength);
   std::vector<char> fragShaderError((logLength > 1) ? logLength : 1);
   glGetShaderInfoLog(fragShader, logLength, NULL, &fragShaderError[0]);
-  std::cout << &fragShaderError[0] << std::endl;
+  std::cerr << &fragShaderError[0] << std::endl;
 
-  std::cout << "Linking program" << std::endl;
+  std::cerr << "Linking program" << std::endl;
   GLuint program = glCreateProgram();
   glAttachShader(program, vertShader);
   glAttachShader(program, fragShader);
@@ -68,7 +68,7 @@ ShaderHandler::ShaderHandler() {
 
   std::vector<char> programError( (logLength > 1) ? logLength : 1 );
   glGetProgramInfoLog(program, logLength, NULL, &programError[0]);
-  std::cout << &programError[0] << std::endl;
+  std::cerr << &programError[0] << std::endl;
 
 
   glDeleteShader(vertShader);

@@ -18,18 +18,18 @@ void createViewVolume() {
   //set projection
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  gluPerspective(45, 1.0, 0.1, 20.0);
+  gluPerspective(30, 1.0, 0.1, 20.0);
   //set view volume
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
-  gluLookAt(0.2, 0.2, 0.2,
-	    0.0, 0.0, 0.0,
-	    0.0, 1.0, 0.0);
+  gluLookAt(0, 3.5, 6.0,  // eye
+	    0.0, 0.5, 0,  // view
+	    0.0, 1.0, 0.0); // up
 }
 
 void createLights() {
   // Fill light
-  float light0_ambient[] = { 0.0, 0.0, 0.0, 0.0 };
+  float light0_ambient[] = { 0.4, 0.0, 0.4, 0.1 };
   float light0_diffuse[] = { 0.5, 0.3, 0.8, 1.0 };
   float light0_specular[] = { 1.0, 0.4, 1.3, 1.0 };
   float light0_position[] = { 0.25, 0.3, 0.1, 1.0 };
@@ -68,8 +68,12 @@ int createMaterials() {
   return 0;
 }
 void displayHander() {
+  static obj_data *od = ObjHandler::getInstance().getObjDataOf("teapot");
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  glutSolidTeapot(.07);
+
+  glBindVertexArray(od->pointer);
+  glDrawArrays(GL_TRIANGLES, 0, od->vertices);
+  //glutSolidTeapot(.07);
   glutSwapBuffers();
 }
 
@@ -92,10 +96,27 @@ int main(int argc, char *argv[]) {
   glutInitWindowSize(w[2], w[3]);
   glutCreateWindow(w.getTitle().c_str());
 
+  glClearColor(0.9, 0.0, 0.0, 1.0);
+
   createViewVolume();
   createLights();
 
   obj_data *od = ObjHandler::getInstance().getObjDataOf("teapot");
+
+  std::cerr << od->data.size() << std::endl;
+  //for (auto i : od->data) std::cout << i << std::endl;
+  glGenBuffers(1,&od->pointer);
+  glBindBuffer(GL_ARRAY_BUFFER, od->pointer);
+  glBufferData(GL_ARRAY_BUFFER, od->data.size() * sizeof(float), &od->data[0], GL_STATIC_DRAW);
+  glVertexPointer(3, GL_FLOAT, 3 * sizeof(GLfloat), NULL);
+  //glNormalPointer(GL_FLOAT, 3 * sizeof(GLfloat), (GLfloat *)(od->normalIndex * sizeof(GLfloat)));
+  //glTexCoordPointer(4, GL_FLOAT, 2 * sizeof(GLfloat), (GLfloat *)(od->textureIndex * sizeof(GLfloat)));
+
+  glEnableClientState(GL_VERTEX_ARRAY);
+  //  glEnableClientState(GL_NORMAL_ARRAY);
+  //glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+
   ShaderHandler &shaderProgramHandler = ShaderHandler::getInstance();
 
   glutDisplayFunc(displayHander);

@@ -74,7 +74,7 @@ const std::string& Data::getXmlStr(const std::string& tag) const {
 void Data::displayData() const {
   std::map<std::string, std::string>::const_iterator ptr = savedData.begin();
   while ( ptr != savedData.end() ) {
-    std::cout << ptr->first << ", " << ptr->second << std::endl;
+    std::cerr << ptr->first << ", " << ptr->second << std::endl;
     ++ptr;
   }
 }

@@ -21,7 +21,7 @@ void ParseXML::parseXML() {
   in.getline(buff, BUFSIZE);
   while ( true ) {
     if (! XML_Parse(parser, buff, strlen(buff), length)) {
-      std::cout << "Parse error at line "
+      std::cerr << "Parse error at line "
 	         << XML_GetCurrentLineNumber(parser)
 	         << XML_ErrorString(XML_GetErrorCode(parser))
            << std::endl;
@@ -36,7 +36,7 @@ void ParseXML::parseXML() {
 void ParseXML::displayData() const {
   std::map<std::string, std::string>::const_iterator ptr = xmlData.begin();
   while ( ptr != xmlData.end() ) {
-    std::cout << '(' << ptr->first << ", "
+    std::cerr << '(' << ptr->first << ", "
                      << ptr->second << ')' << std::endl;
     ++ptr;
   }
