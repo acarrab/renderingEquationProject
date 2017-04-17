@@ -36,6 +36,7 @@ class ObjHandler {
 public:
   static ObjHandler& getInstance();
   obj_data* getObjDataOf(std::string objectName);
+  void bindOn(std::string objectName);
 };
 
 #endif

@@ -50,18 +50,8 @@ read_data ObjHandler::getDataFromFile(std::string fileName) {
     } else if (tag[0] != '#') {
       std::cerr << "UNKNOWN TAG: " << tag << ' ' << s << std::endl;
     }
-
-
-
-
   }
 
-  std::cerr << "v:\t"  << d.v.size() << std::endl;
-  std::cerr << "vn:\t" << d.vn.size() << std::endl;
-  std::cerr << "vt:\t" << d.vt.size() << std::endl;
-  std::cerr << "vx:\t" << d.vx.size() << std::endl;
-  std::cerr << "vy:\t" << d.vy.size() << std::endl;
-  std::cerr << "f:\t"  << d.f.size() << std::endl;
   return d;
 }
 
@@ -127,8 +117,38 @@ obj_data* ObjHandler::getObjDataOf(std::string objectName) {
 	od.data.push_back(val);
   */
 
-  std::cerr << "size:\t"  << od.data.size() << std::endl;
 
   objects[objectName] = od;
   return &objects[objectName];
+}
+
+void ObjHandler::bindOn(std::string objectName) {
+  obj_data *od;
+  if (objects.find(objectName) != objects.end())
+    od = getObjDataOf(objectName);
+  else
+    od = &objects.find(objectName)->second;
+
+  glGenBuffers(1,&od->pointer);
+  glBindBuffer(GL_ARRAY_BUFFER, od->pointer);
+
+  glBufferData(GL_ARRAY_BUFFER,
+	       od->data.size() * sizeof(float),
+	       &od->data[0],
+	       GL_STATIC_DRAW);
+
+  glVertexPointer(3, GL_FLOAT,
+		  3 * sizeof(GLfloat),
+		  NULL);
+  glNormalPointer(GL_FLOAT,
+		  3 * sizeof(GLfloat),
+		  (GLfloat *)(od->normalIndex * sizeof(GLfloat)));
+  // glTexCoordPointer(2,
+  // 		    GL_FLOAT,
+  // 		    2 * sizeof(GLfloat),
+  // 		    (GLfloat *)(od->textureIndex * sizeof(GLfloat)));
+
+  glEnableClientState(GL_VERTEX_ARRAY);
+  glEnableClientState(GL_NORMAL_ARRAY);
+  //glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 }
