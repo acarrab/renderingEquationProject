@@ -22,7 +22,7 @@ private:
   ParseXML parser;
   const std::map<std::string, std::string> savedData;
 
-  Data(const std::string& fn = "settings.xml");
+  Data(const std::string& fn = "xmlSpec/settings.xml");
   Data(const Data&);
   Data& operator=(const Data&);
 };
