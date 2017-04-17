@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
   glewInit();
   //instantiates shaders
   ShaderHandler &shaderProgramHandler = ShaderHandler::getInstance();
-  shaderProgramHandler.useProgram("shader");
+  shaderProgramHandler.useProgram("basic");
 
   glutDisplayFunc(displayHander);
   glutKeyboardFunc(keyboardHandler);

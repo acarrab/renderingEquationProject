@@ -16,7 +16,7 @@
   <fileName>resources/test.txt</fileName>
 </test>
 
-<shader>
+<basic>
   <vert>resources/prog.vert</vert>
   <frag>resources/prog.frag</frag>
-</shader>
+</basic>
