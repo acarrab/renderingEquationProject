@@ -19,9 +19,11 @@
 
 class ShaderHandler {
   std::string readFile(std::string filePath);
-  static GLuint program;
-  ShaderHandler();
+  std::map<std::string, GLuint> loadedPrograms;
+  ShaderHandler() {};
+  GLuint compileProgram(std::string vert, std::string frag);
 public:
+  void useProgram(std::string type);
   static ShaderHandler& getInstance();
 };
 

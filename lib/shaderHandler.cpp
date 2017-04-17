@@ -1,7 +1,5 @@
 #include "../include/shaderHandler.h"
 
-GLuint ShaderHandler::program = 0;
-
 std::string ShaderHandler::readFile(std::string filePath) {
   std::string content;
   std::ifstream fileStream(filePath, std::ios::in);
@@ -18,15 +16,14 @@ std::string ShaderHandler::readFile(std::string filePath) {
   return content;
 }
 
-ShaderHandler::ShaderHandler() {
-  Data &d = Data::getInstance();
+GLuint ShaderHandler::compileProgram(std::string vertLoc, std::string fragLoc) {
 
   GLuint vertShader = glCreateShader(GL_VERTEX_SHADER);
   GLuint fragShader = glCreateShader(GL_FRAGMENT_SHADER);
 
   // Read shaders
-  std::string vertShaderStr = readFile(d.getXmlStr("shader/vert"));
-  std::string fragShaderStr = readFile(d.getXmlStr("shader/frag"));
+  std::string vertShaderStr = readFile(vertLoc);
+  std::string fragShaderStr = readFile(fragLoc);
   const char *vertShaderSrc = vertShaderStr.c_str();
   const char *fragShaderSrc = fragShaderStr.c_str();
 
@@ -74,9 +71,17 @@ ShaderHandler::ShaderHandler() {
   glDeleteShader(vertShader);
   glDeleteShader(fragShader);
 
-  this->program = program;
 
-  glUseProgram(program);
+  return program;
+}
+
+void ShaderHandler::useProgram(std::string type) {
+  static Data &d = Data::getInstance();
+  if (!loadedPrograms.count(type)) {
+    loadedPrograms[type] = compileProgram(d.getXmlStr(type + "/vert"),
+					  d.getXmlStr(type + "/frag"));
+  }
+  glUseProgram(loadedPrograms[type]);
 }
 ShaderHandler& ShaderHandler::getInstance() {
   static ShaderHandler instance;
