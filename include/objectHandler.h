@@ -33,6 +33,11 @@ class ObjHandler {
   //flyweight
   std::map<std::string, obj_data> objects;
   read_data getDataFromFile(std::string fileName);
+  std::vector<int> parseFace(std::string s);
+  void triangularize(obj_data &od,
+		     std::vector< std::vector< std::vector<int> > > &f,
+		     std::vector< std::vector<GLfloat> > &v,
+		     int index);
 public:
   static ObjHandler& getInstance();
   obj_data* getObjDataOf(std::string objectName);

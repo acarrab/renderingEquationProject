@@ -4,13 +4,12 @@ ObjHandler& ObjHandler::getInstance() {
   static ObjHandler instance;
   return instance;
 }
-std::vector<int> parseFace(std::string s) {
+std::vector<int> ObjHandler::parseFace(std::string s) {
   std::vector<int> x;
   std::stringstream ss(s);
   while (getline(ss, s, '/')) x.push_back(stoi(s));
   return x;
 }
-
 read_data ObjHandler::getDataFromFile(std::string fileName) {
   read_data d;
   std::ifstream fin(fileName);
@@ -50,23 +49,19 @@ read_data ObjHandler::getDataFromFile(std::string fileName) {
     } else if (tag[0] != '#') {
       std::cerr << "UNKNOWN TAG: " << tag << ' ' << s << std::endl;
     }
-
-
-
-
   }
-
+  /*
   std::cerr << "v:\t"  << d.v.size() << std::endl;
   std::cerr << "vn:\t" << d.vn.size() << std::endl;
   std::cerr << "vt:\t" << d.vt.size() << std::endl;
   std::cerr << "vx:\t" << d.vx.size() << std::endl;
   std::cerr << "vy:\t" << d.vy.size() << std::endl;
-  std::cerr << "f:\t"  << d.f.size() << std::endl;
+  std::cerr << "f:\t"  << d.f.size() << std::endl;*/
   return d;
 }
 
 //converts to triangles
-void triangularize(obj_data &od,
+void ObjHandler::triangularize(obj_data &od,
 		   std::vector< std::vector< std::vector<int> > > &f,
 		   std::vector< std::vector<GLfloat> > &v,
 		   int index) {
@@ -104,30 +99,8 @@ obj_data* ObjHandler::getObjDataOf(std::string objectName) {
   od.tangentIndexY = od.data.size();
   triangularize(od, rd.f, rd.vy, 0);
 
-  /*
 
-  od.normalIndex = od.data.size();
-  for (auto face : rd.f) {
-    for (int i = 0; i < 3; i++)
-      for (GLfloat point : rd.v[face[i][0] - 1]) od.data.push_back(point);
-    for (int i = 2; i < 5; i++)
-      for (GLfloat point : rd.v[face[i%4][0] - 1]) od.data.push_back(point);
-  }
-
-
-  for (auto face : rd.f)
-    for (int normal : face[1])
-      for (float val : rd.vn[normal - 1])
-	od.data.push_back(val);
-
-  od.textureIndex = od.data.size();
-  for (auto face : rd.f)
-    for (int textCoord : face[2])
-      for (float val : rd.vt[textCoord - 1])
-	od.data.push_back(val);
-  */
-
-  std::cerr << "size:\t"  << od.data.size() << std::endl;
+  // std::cerr << "size:\t"  << od.data.size() << std::endl;
 
   objects[objectName] = od;
   return &objects[objectName];
