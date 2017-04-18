@@ -64,7 +64,7 @@ float Data::getXmlFloat(const std::string& tag) const {
   }
 }
 
-const std::string& Data::getXmlStr(const std::string& tag) const {
+std::string Data::getXmlStr(const std::string& tag) const {
   std::map<std::string, std::string>::const_iterator ptr = savedData.find(tag);
   if ( ptr == savedData.end() )
     throw std::string("Didn't find string tag ")+tag+std::string(" in xml");

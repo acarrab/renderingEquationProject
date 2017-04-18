@@ -11,7 +11,7 @@ public:
   void displayData() const;
 
   bool getXmlBool(const std::string&) const;
-  const std::string& getXmlStr(const std::string&) const;
+  std::string getXmlStr(const std::string&) const;
   float getXmlFloat(const std::string&) const;
   int getXmlInt(const std::string&) const;
   float getRandInRange(int min, int max) const;
