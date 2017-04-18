@@ -33,6 +33,9 @@ std::vector<int> parseFace(std::string s) {
 read_data * ObjectHandler::getDataFromFile(std::string fileName) {
   read_data *d = new read_data();
   std::ifstream fin(fileName);
+  if (!fin.is_open()) {
+    std::cout << "Failed to open " << fileName << std::endl;
+  }
   std::string tag, s;
   while (fin >> tag) {
     std::getline(fin, s);
@@ -67,7 +70,6 @@ read_data * ObjectHandler::getDataFromFile(std::string fileName) {
 const Draw_Data & ObjectHandler::generate(const std::string &objectName) {
   static Data &xml = Data::getInstance();
   if (objects.count(objectName)) return objects[objectName];
-
   /*
     In order to generate a program we have to load the vertex
     information and store it in vbo
@@ -77,12 +79,12 @@ const Draw_Data & ObjectHandler::generate(const std::string &objectName) {
   std::string fileName = xml.getXmlStr(objectName + "/objFile");
   read_data *rd = getDataFromFile(fileName);
   Draw_Data drawData;
-  drawData.setShader(xml.getXmlStr(objectName + "/shader"));
   std::vector<GLfloat> data;
   void (*convert)(std::vector<GLfloat> &data,
 		     std::vector< std::vector< std::vector<int> > > &f,
 		     std::vector< std::vector<GLfloat> > &v,
 		  int index);
+
 
   //set buffer generator
   auto genBuf = [](std::vector<GLfloat> &data)->GLuint{
@@ -99,11 +101,12 @@ const Draw_Data & ObjectHandler::generate(const std::string &objectName) {
   } else {
     convert = &baseConvert;
   }
-
   //get vertice data
   int face = 0;
   convert(data, rd->f, rd->v, face);//converts data to triangles
   drawData.setVertexCount(data.size() / 3);   //from quads
+  drawData.setVertexType(GL_TRIANGLES);
+
   //load data to gpu, then push it back VBO_Data
   drawData.push_back(VBO_Data(genBuf(data), 0, 3));
 
@@ -136,34 +139,9 @@ const Draw_Data & ObjectHandler::generate(const std::string &objectName) {
     drawData.push_back(VBO_Data(genBuf(data), 2, 3));
   }
   delete rd;
+
+
   //we now have drawData which contains all attributes and whatnot
   objects[objectName] = drawData;
   return objects[objectName];
-}
-
-void ObjectHandler::attributeLoad(const std::string &objectName) {
-  static ShaderHandler &sh = ShaderHandler::getInstance();
-  //check if we have vbo's generated
-  currentObj = &generate(objectName);
-  //start up the shader program
-  sh.useProgram(currentObj->getShader());
-  //enable all attributes necessary
-  //load each vertex attribute
-  for (const VBO_Data & va : currentObj->getAttribs()) {
-    glEnableVertexAttribArray(va.attribNum);
-    glVertexAttribPointer(va.attribNum, va.vecSize, va.dataType,
-			  va.normalized, va.stride, va.address);
-    glBindBuffer(GL_ARRAY_BUFFER, va.id);
-  }
-}
-void ObjectHandler::attributeDraw() {
-  //draw the array
-  glDrawArrays(currentObj->getVertexType(), 0, currentObj->getVertexCount());
-  std::cout << currentObj->getVertexCount() << std::endl;
-}
-void ObjectHandler::attributeClear() {
-  //disable the attributes
-  for (const VBO_Data & va : currentObj->getAttribs()) {
-    glDisableVertexAttribArray(va.attribNum);
-  }
 }

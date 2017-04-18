@@ -15,6 +15,9 @@
 #include <iostream>
 #include <cstdio>
 #include <algorithm>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/transform.hpp>
 #include "data.h"
 #include "shaderHandler.h"
 struct VBO_Data {
@@ -37,13 +40,11 @@ struct VBO_Data {
 };
 
 class Draw_Data {
-  std::string shaderType;
   std::vector< VBO_Data > attributes;
   GLuint vertexType;
   GLuint vertexCount;
 public:
   //getters
-  const std::string & getShader() const { return shaderType; }
   const VBO_Data & operator[](unsigned int i) const { return attributes[i]; }
   const std::vector<VBO_Data> & getAttribs() const { return attributes; }
   GLuint getVertexType() const { return vertexType; }
@@ -53,7 +54,6 @@ public:
   void push_back(VBO_Data data) { attributes.push_back(data); }
   void setVertexType(GLuint type) { vertexType = type; }
   void setVertexCount(GLuint count) { vertexCount = count; }
-  void setShader(std::string shaderName) { shaderType = shaderName; }
 };
 
 struct read_data {
@@ -67,13 +67,15 @@ class ObjectHandler {
   read_data* getDataFromFile(std::string fileName);
   const Draw_Data& generate(const std::string &objectName);
   Draw_Data const *currentObj;
+  glm::mat4 mvp;
 public:
   //make it a singleton
-  static ObjectHandler& getInstance() { static ObjectHandler instance; return instance; }
-
-  void attributeLoad(const std::string &objectName);
-  void attributeDraw();
-  void attributeClear();
+  static ObjectHandler& getInstance() {
+    static ObjectHandler instance; return instance;
+  }
+  const Draw_Data& getDataFor(const std::string &name) {
+    return generate(name);
+  }
 };
 
 #endif

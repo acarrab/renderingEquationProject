@@ -23,7 +23,7 @@
 
 
 <box>
-  <objFile>resources/box.obj</objFile>
+  <objFile>resources/box/box.obj</objFile>
   <shader>boxShader</shader>
   <quads>false</quads>
 </box>

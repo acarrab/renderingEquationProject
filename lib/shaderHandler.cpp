@@ -71,7 +71,6 @@ GLuint ShaderHandler::compileProgram(std::string vertLoc, std::string fragLoc) {
   glDeleteShader(vertShader);
   glDeleteShader(fragShader);
 
-
   return program;
 }
 
