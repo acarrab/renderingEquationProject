@@ -30,7 +30,7 @@ void keyboardHandler(unsigned char key, int x, int y) {
 
 
 void displayHander() {
-  static Teapot tp(Data::g().getXmlStr("teapot/shader"), createPerspective());
+  static Teapot tp(Data::g().getXmlStr("teapot/shader"));
   tp.draw();
   glutSwapBuffers();
 }

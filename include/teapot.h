@@ -35,7 +35,7 @@ class Teapot {
   GLuint programId;
   GLuint rtnMtxId;
  public:
-  Teapot(const std::string &programName, glm::mat4 MVP) :
+  Teapot(const std::string &programName) :
     oh(ObjectHandler::getInstance()),
     sh(ShaderHandler::getInstance()),
     lh(LightHandler::getInstance()),
