@@ -18,6 +18,7 @@
 #include <glm/gtx/transform.hpp>
 
 #include "data.h"
+#include "uniformHandler.h"
 
 class LightHandler : protected UniformHandler {
   glm::vec3 position;
