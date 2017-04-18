@@ -51,8 +51,6 @@ int main(int argc, char *argv[]) {
 
 
   glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
-  createPerspective();
-
 
   glutDisplayFunc(displayHander);
   glutKeyboardFunc(keyboardHandler);
