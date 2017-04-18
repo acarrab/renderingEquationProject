@@ -43,8 +43,7 @@ int main(int argc, char *argv[]) {
 			 d.getXmlFloat("window/y"));
   glutInitWindowSize(d.getXmlFloat("window/width"),
 		     d.getXmlFloat("window/height"));
-  glutCreateWindow(d.getXmlFloat("window/title").
-c_str());
+  glutCreateWindow(d.getXmlStr("window/title").c_str());
   glewInit();
   //instantiates shaders
   glEnable(GL_DEPTH_TEST);
