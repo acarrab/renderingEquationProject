@@ -19,7 +19,7 @@
 
 class UniformHandler {
 protected:
-  LightHandler() {}
+  UniformHandler() {}
 public:
   virtual void loadElements(GLuint programId)  = 0;
 };
