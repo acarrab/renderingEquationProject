@@ -26,6 +26,6 @@ uniform mat4 rotationMtx;
 
 
 void main() {
-    gl_Position = mvpMtx*vec4(vertexPosition, 1.0);
+    gl_Position = vec4(vertexPosition, 1.0);
     fragmentColor = vec4(1.0, 0.0, 0.0, 1.0);
 }
