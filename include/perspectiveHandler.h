@@ -20,7 +20,7 @@
 #include "data.h"
 #include "uniformHandler.h"
 
-class PerspectiveHandler : protected UniformHandler {
+class PerspectiveHandler : public UniformHandler {
   Data &d;
   glm::vec3 cameraLoc, cameraLookAt, up;
   glm::mat4 projection, view, model, MVP;
