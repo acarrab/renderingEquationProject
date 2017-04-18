@@ -21,8 +21,7 @@
 #include "uniformHandler.h"
 
 class LightHandler : public UniformHandler {
-  glm::vec3 position;
-  glm::vec3 direction;
+  glm::vec3 position, direction;
   LightHandler() :
     position(glm::vec3(0,10,0)),
     direction(glm::vec3(0, -1, 0))

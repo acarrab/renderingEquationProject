@@ -24,7 +24,7 @@ class PerspectiveHandler : public UniformHandler {
   Data &d;
   glm::vec3 cameraLoc, cameraLookAt, up;
   glm::mat4 projection, view, model, MVP;
-  LightHandler() :
+  PerspectiveHandler() :
     d(Data::getInstance()),
     cameraLoc(0, 4, -3),
     cameraLookAt(0, 0, 0),
