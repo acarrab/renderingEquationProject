@@ -10,14 +10,14 @@
 
 
 <teapot>
-  <objFile>~/Desktop/renderingEquationProject/resources/teapot/teapot.obj</objFile>
+  <objFile>/home/acarrab/Desktop/renderingEquationProject/resources/teapot/teapot.obj</objFile>
   <shader>teapotShader</shader>
   <quads>true</quads>
 </teapot>
 
 <teapotShader>
-  <vert>~/Desktop/renderingEquationProject/resources/teapot/prog.vert</vert>
-  <frag>~/Desktop/renderingEquationProject/resources/teapot/prog.frag</frag>
+  <vert>/home/acarrab/Desktop/renderingEquationProject/resources/teapot/prog.vert</vert>
+  <frag>/home/acarrab/Desktop/renderingEquationProject/resources/teapot/prog.frag</frag>
 </teapotShader>
 
 
