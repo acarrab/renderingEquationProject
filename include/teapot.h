@@ -27,16 +27,21 @@ class Teapot {
   ObjectHandler &oh;
   ShaderHandler &sh;
   LightHandler &lh;
+  PerspectiveHandler &ph;
+  std::vector<UniformHandler *> uniformList;
+
   const Draw_Data &data;
   glm::mat4 mvp, rtn;
   GLuint programId;
   GLuint mvpMtxId, rtnMtxId, lightId;
-
  public:
   Teapot(const std::string &programName, glm::mat4 MVP) :
     oh(ObjectHandler::getInstance()),
     sh(ShaderHandler::getInstance()),
     lh(LightHandler::getInstance()),
+    ph(PerspectiveHandler::getInstance()),
+    uniformList({&lh, &ph}),//things that need to load their uniform
+			    //data attributes.
     data(oh.getDataFor("teapot")),
     mvp(MVP),
     rtn(glm::rotate(45.0f, glm::vec3(0.0, 1.0, 0.0))),
@@ -44,7 +49,9 @@ class Teapot {
     mvpMtxId(glGetUniformLocation(programId, "MVP")),
     rtnMtxId(glGetUniformLocation(programId, "Rotation")),
     lightId(glGetUniformLocation(programId, "lightPosition"))
-  {}
+  {
+
+  }
   void draw();
 };
 

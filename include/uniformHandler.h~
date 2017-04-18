@@ -19,7 +19,7 @@
 
 #include "data.h"
 
-class LightHandler : protected UniformHandler {
+class LightHandler : UniformHandler {
   glm::vec3 position;
   glm::vec3 direction;
   LightHandler() :
