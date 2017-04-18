@@ -31,7 +31,7 @@ GLuint ShaderHandler::compileProgram(std::string vertLoc, std::string fragLoc) {
   int logLength;
 
   // Compile vertex shader
-  std::cerr << "Compiling vertex shader." << std::endl;
+  std::cerr << "Compiling " << vertLoc << " vertex shader..." << std::endl;
   glShaderSource(vertShader, 1, &vertShaderSrc, NULL);
   glCompileShader(vertShader);
 
@@ -43,7 +43,7 @@ GLuint ShaderHandler::compileProgram(std::string vertLoc, std::string fragLoc) {
   std::cerr << &vertShaderError[0] << std::endl;
 
   // Compile fragment shader
-  std::cerr << "Compiling fragment shader." << std::endl;
+  std::cerr << "Compiling " << fragLoc << " fragment shader..." << std::endl;
   glShaderSource(fragShader, 1, &fragShaderSrc, NULL);
   glCompileShader(fragShader);
 
@@ -75,13 +75,22 @@ GLuint ShaderHandler::compileProgram(std::string vertLoc, std::string fragLoc) {
   return program;
 }
 
-void ShaderHandler::useProgram(std::string type) {
+void ShaderHandler::useProgram(const std::string &type) {
   static Data &d = Data::getInstance();
   if (!loadedPrograms.count(type)) {
     loadedPrograms[type] = compileProgram(d.getXmlStr(type + "/vert"),
 					  d.getXmlStr(type + "/frag"));
   }
   glUseProgram(loadedPrograms[type]);
+}
+
+GLuint ShaderHandler::getProgramId(const std::string &type) {
+  static Data &xml = Data::getInstance();
+  if (!loadedPrograms.count(type)) {
+    loadedPrograms[type] = compileProgram(xml.getXmlStr(type + "/vert"),
+					  xml.getXmlStr(type + "/frag"));
+  }
+  return loadedPrograms[type];
 }
 ShaderHandler& ShaderHandler::getInstance() {
   static ShaderHandler instance;

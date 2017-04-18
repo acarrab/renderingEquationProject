@@ -3,20 +3,32 @@
 <window>
   <x>100</x>
   <y>100</y>
-  <width>720</width>
-  <height>720</height>
+  <width>800</width>
+  <height>800</height>
   <title>Rendering Equation Approximation</title>
 </window>
 
+
 <teapot>
-  <fileName>resources/teapot.605.obj</fileName>
+  <objFile>resources/teapot/teapot.obj</objFile>
+  <shader>teapotShader</shader>
+  <quads>true</quads>
 </teapot>
 
-<test>
-  <fileName>resources/test.txt</fileName>
-</test>
+<teapotShader>
+  <vert>resources/teapot/prog.vert</vert>
+  <frag>resources/teapot/prog.frag</frag>
+</teapotShader>
 
-<basic>
-  <vert>resources/prog.vert</vert>
-  <frag>resources/prog.frag</frag>
-</basic>
+
+
+<box>
+  <objFile>resources/box.obj</objFile>
+  <shader>boxShader</shader>
+  <quads>false</quads>
+</box>
+
+<boxShader>
+  <vert>resources/box/prog.vert</vert>
+  <frag>resources/box/prog.frag</frag>
+</boxShader>

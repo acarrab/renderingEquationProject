@@ -23,7 +23,8 @@ class ShaderHandler {
   ShaderHandler() {};
   GLuint compileProgram(std::string vert, std::string frag);
 public:
-  void useProgram(std::string type);
+  void useProgram(const std::string &type);
+  GLuint getProgramId(const std::string &type);
   static ShaderHandler& getInstance();
 };
 

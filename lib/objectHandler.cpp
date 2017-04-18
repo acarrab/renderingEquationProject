@@ -1,9 +1,28 @@
 #include "../include/objectHandler.h"
 
-ObjHandler& ObjHandler::getInstance() {
-  static ObjHandler instance;
-  return instance;
+
+
+//converts to triangles
+void triangularize(std::vector<GLfloat> &data,
+		   std::vector< std::vector< std::vector<int> > > &f,
+		   std::vector< std::vector<GLfloat> > &v,
+		   int index) {
+ for (auto face : f) {
+    for (int i = 0; i < 3; i++)
+      for (GLfloat point : v[face[i][index] - 1]) data.push_back(point);
+    for (int i = 2; i < 5; i++)
+      for (GLfloat point : v[face[i%4][index] - 1]) data.push_back(point);
+  }
 }
+void baseConvert(std::vector<GLfloat> &data,
+		 std::vector< std::vector< std::vector<int> > > &f,
+		 std::vector< std::vector<GLfloat> > &v,
+		 int index) {
+  for (auto face : f)
+    for (int i = 0; i < 3; i++)
+      for (GLfloat point : v[face[i][index] - 1]) data.push_back(point);
+}
+
 std::vector<int> parseFace(std::string s) {
   std::vector<int> x;
   std::stringstream ss(s);
@@ -11,144 +30,140 @@ std::vector<int> parseFace(std::string s) {
   return x;
 }
 
-read_data ObjHandler::getDataFromFile(std::string fileName) {
-  read_data d;
+read_data * ObjectHandler::getDataFromFile(std::string fileName) {
+  read_data *d = new read_data();
   std::ifstream fin(fileName);
   std::string tag, s;
-
-  bool first = true;
   while (fin >> tag) {
     std::getline(fin, s);
     if (tag[0] == 'v') {
       std::stringstream ss(s);
       std::vector< GLfloat > v;
       GLfloat x;
-      while (ss >> x) v.push_back(x);
-
-      if (tag == "v") d.v.push_back(v);
-      else if (tag == "vt") d.vt.push_back(v);
-      else if (tag == "vn") d.vn.push_back(v);
-      else if (tag == "vx") d.vx.push_back(v);
-      else if (tag == "vy") d.vy.push_back(v);
+      while (ss >> x) v.push_back(x);//read in all floats in that line
+      if (tag == "v") d->v.push_back(v);
+      else if (tag == "vt") d->vt.push_back(v);
+      else if (tag == "vn") d->vn.push_back(v);
+      else if (tag == "vx") d->vx.push_back(v);
+      else if (tag == "vy") d->vy.push_back(v);
       else std::cerr << "UNKNOWN TAG: " << tag << ' ' << s << std::endl;
-
-
-
     } else if (tag[0] == 'f') {
-      if (first) {
-	std::stringstream ss(s);
-	std::string face;
-
-	std::vector< std::vector<int> > all;
-	for (int i = 0; i < 4; i++) {
-	  ss >> face;
-	  all.push_back(parseFace(face));
-	}
-	d.f.push_back(all);
-	//first = false;
+      std::stringstream ss(s);
+      std::string face;
+      std::vector< std::vector<int> > all;
+      for (int i = 0; i < 4; i++) {
+	ss >> face;
+	all.push_back(parseFace(face));
       }
+      d->f.push_back(all);
     } else if (tag[0] != '#') {
       std::cerr << "UNKNOWN TAG: " << tag << ' ' << s << std::endl;
     }
   }
-
   return d;
 }
 
-//converts to triangles
-void triangularize(obj_data &od,
-		   std::vector< std::vector< std::vector<int> > > &f,
-		   std::vector< std::vector<GLfloat> > &v,
-		   int index) {
- for (auto face : f) {
-    for (int i = 0; i < 3; i++)
-      for (GLfloat point : v[face[i][index] - 1]) od.data.push_back(point);
-    for (int i = 2; i < 5; i++)
-      for (GLfloat point : v[face[i%4][index] - 1]) od.data.push_back(point);
-  }
-}
-obj_data* ObjHandler::getObjDataOf(std::string objectName) {
-  if (objects.find(objectName) != objects.end())
-    return &objects.find(objectName)->second;
-  std::string fileName;
-  try {
-    fileName = Data::g().getXmlStr(objectName + "/fileName");
-  } catch (...) {
-    std::cerr << "Failed to find" << objectName << "/fileName" << std::endl;
-    return nullptr;
-  }
-  read_data rd = getDataFromFile(fileName);
-  obj_data od;
-  triangularize(od, rd.f, rd.v, 0);
-  od.vertices = od.data.size() / 3;
 
-  od.normalIndex =  od.data.size();
-  triangularize(od, rd.f, rd.vn, 2);
-
-  od.textureIndex = od.data.size();
-  triangularize(od, rd.f, rd.vt, 1);
-
-  od.tangentIndexX = od.data.size();
-  triangularize(od, rd.f, rd.vx, 0);
-
-  od.tangentIndexY = od.data.size();
-  triangularize(od, rd.f, rd.vy, 0);
+const Draw_Data & ObjectHandler::generate(const std::string &objectName) {
+  static Data &xml = Data::getInstance();
+  if (objects.count(objectName)) return objects[objectName];
 
   /*
+    In order to generate a program we have to load the vertex
+    information and store it in vbo
+  */
+  //set shader
+  //if quads we have to convert to triangles
+  std::string fileName = xml.getXmlStr(objectName + "/objFile");
+  read_data *rd = getDataFromFile(fileName);
+  Draw_Data drawData;
+  drawData.setShader(xml.getXmlStr(objectName + "/shader"));
+  std::vector<GLfloat> data;
+  void (*convert)(std::vector<GLfloat> &data,
+		     std::vector< std::vector< std::vector<int> > > &f,
+		     std::vector< std::vector<GLfloat> > &v,
+		  int index);
 
-  od.normalIndex = od.data.size();
-  for (auto face : rd.f) {
-    for (int i = 0; i < 3; i++)
-      for (GLfloat point : rd.v[face[i][0] - 1]) od.data.push_back(point);
-    for (int i = 2; i < 5; i++)
-      for (GLfloat point : rd.v[face[i%4][0] - 1]) od.data.push_back(point);
+  //set buffer generator
+  auto genBuf = [](std::vector<GLfloat> &data)->GLuint{
+    GLuint tmpId;
+    glGenBuffers(1, &tmpId);
+    glBindBuffer(GL_ARRAY_BUFFER, tmpId);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*data.size(),
+		 &data[0], GL_STATIC_DRAW);
+    return tmpId;
+  };
+  //set conversion
+  if (xml.getXmlBool(objectName + "/quads")) {
+    convert = &triangularize;
+  } else {
+    convert = &baseConvert;
   }
 
+  //get vertice data
+  int face = 0;
+  convert(data, rd->f, rd->v, face);//converts data to triangles
+  drawData.setVertexCount(data.size() / 3);   //from quads
+  //load data to gpu, then push it back VBO_Data
+  drawData.push_back(VBO_Data(genBuf(data), 0, 3));
 
-  for (auto face : rd.f)
-    for (int normal : face[1])
-      for (float val : rd.vn[normal - 1])
-	od.data.push_back(val);
+  //tangents
+  if (rd->vx.size() && rd->vy.size()) {
+    data.resize(0); //does not change underlying capacity, i.e. no new mallocs
+    convert(data, rd->f, rd->vx, face);
+    //load data to gpu then push it back VBO_Data
+    drawData.push_back(VBO_Data(genBuf(data), 3, 3));
 
-  od.textureIndex = od.data.size();
-  for (auto face : rd.f)
-    for (int textCoord : face[2])
-      for (float val : rd.vt[textCoord - 1])
-	od.data.push_back(val);
-  */
+    data.resize(0);
+    convert(data, rd->f, rd->vy, face);
+    //load data to gpu then push it back VBO_Data
+    drawData.push_back(VBO_Data(genBuf(data), 4, 3));
+  }
 
+  if (rd->vt.size()) {
+    face++;
+    data.resize(0);
+    convert(data, rd->f, rd->vt, face);
+    //load data to gpu then push it back VBO_Data
+    drawData.push_back(VBO_Data(genBuf(data), 1, 2));
+    //only 2 for texture
+  }
 
-  objects[objectName] = od;
-  return &objects[objectName];
+  if (rd->vn.size()) {
+    face++;
+    data.resize(0);
+    convert(data, rd->f, rd->vn, face);
+    drawData.push_back(VBO_Data(genBuf(data), 2, 3));
+  }
+  delete rd;
+  //we now have drawData which contains all attributes and whatnot
+  objects[objectName] = drawData;
+  return objects[objectName];
 }
 
-void ObjHandler::bindOn(std::string objectName) {
-  obj_data *od;
-  if (objects.find(objectName) != objects.end())
-    od = getObjDataOf(objectName);
-  else
-    od = &objects.find(objectName)->second;
-
-  glGenBuffers(1,&od->pointer);
-  glBindBuffer(GL_ARRAY_BUFFER, od->pointer);
-
-  glBufferData(GL_ARRAY_BUFFER,
-	       od->data.size() * sizeof(float),
-	       &od->data[0],
-	       GL_STATIC_DRAW);
-
-  glVertexPointer(3, GL_FLOAT,
-		  3 * sizeof(GLfloat),
-		  NULL);
-  glNormalPointer(GL_FLOAT,
-		  3 * sizeof(GLfloat),
-		  (GLfloat *)(od->normalIndex * sizeof(GLfloat)));
-  // glTexCoordPointer(2,
-  // 		    GL_FLOAT,
-  // 		    2 * sizeof(GLfloat),
-  // 		    (GLfloat *)(od->textureIndex * sizeof(GLfloat)));
-
-  glEnableClientState(GL_VERTEX_ARRAY);
-  glEnableClientState(GL_NORMAL_ARRAY);
-  //glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+void ObjectHandler::attributeLoad(const std::string &objectName) {
+  static ShaderHandler &sh = ShaderHandler::getInstance();
+  //check if we have vbo's generated
+  currentObj = &generate(objectName);
+  //start up the shader program
+  sh.useProgram(currentObj->getShader());
+  //enable all attributes necessary
+  //load each vertex attribute
+  for (const VBO_Data & va : currentObj->getAttribs()) {
+    glEnableVertexAttribArray(va.attribNum);
+    glVertexAttribPointer(va.attribNum, va.vecSize, va.dataType,
+			  va.normalized, va.stride, va.address);
+    glBindBuffer(GL_ARRAY_BUFFER, va.id);
+  }
+}
+void ObjectHandler::attributeDraw() {
+  //draw the array
+  glDrawArrays(currentObj->getVertexType(), 0, currentObj->getVertexCount());
+  std::cout << currentObj->getVertexCount() << std::endl;
+}
+void ObjectHandler::attributeClear() {
+  //disable the attributes
+  for (const VBO_Data & va : currentObj->getAttribs()) {
+    glDisableVertexAttribArray(va.attribNum);
+  }
 }
