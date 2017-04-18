@@ -22,6 +22,7 @@
 #include "shaderHandler.h"
 #include "objectHandler.h"
 #include "lightHandler.h"
+#include "perspectiveHandler.h"
 
 class Teapot {
   ObjectHandler &oh;
