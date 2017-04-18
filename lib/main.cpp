@@ -14,9 +14,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
-#include "../include/winData.h"
-#include "../include/shaderHandler.h"
-#include "../include/objectHandler.h"
+
 #include "../include/teapot.h"
 
 void keyboardHandler(unsigned char key, int x, int y) {
