@@ -8,9 +8,22 @@ layout(location = 2) in vec3 vertexNormal;
 layout(location = 3) in vec3 vertexTangentX;
 layout(location = 4) in vec3 vertexTangentY;
 
-uniform mat4 MVP;
-uniform mat4 Rotation;
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Perspective ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+uniform vec3 cameraPosition;
+uniform vec3 cameraLookAt;
+
+uniform mat4 projectionMtx;
+uniform mat4 viewMtx;
+uniform mat4 modelMtx;
+uniform mat4 mvpMtx;
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Light ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 uniform vec3 lightPosition;
+uniform vec3 lightDirection;
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Teapot ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+uniform mat4 rotationMtx;
+
 
 void main() {
     gl_Position = MVP * Rotation * vec4(vertexPosition, 1.0);

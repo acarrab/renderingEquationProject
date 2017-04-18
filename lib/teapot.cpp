@@ -2,11 +2,10 @@
 
 void Teapot::draw() {
   glUseProgram(programId);
-  lh.loadElements(programId);
+
+  for (UniformHandler *uh : uniformList) uh->loadElements(programId);
+
   glUniformMatrix4fv(rtnMtxId, 1, GL_FALSE, &rtn[0][0]);
-
-
-  glUniform3f(lightId, lightPos.x, lightPos.y, lightPos.z);
 
   for (const VBO_Data & va : data.getAttribs()) {
     glEnableVertexAttribArray(va.attribNum);
