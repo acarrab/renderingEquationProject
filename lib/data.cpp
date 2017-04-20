@@ -29,9 +29,9 @@ bool  Data::checkTag(const std::string& tag)const{
 }
 
 bool Data::getXmlBool(const std::string& tag) const {
-  std::map<std::string, std::string>::const_iterator ptr = savedData.find(tag);
+  auto ptr = savedData.find(tag);
   if ( ptr == savedData.end() )
-    throw std::string("Didn't find boolean tag ")+tag+std::string(" in xml");
+    throw std::string("Didn't find boolean tag ")+tag;
   else {
     if ( ptr->second == "true" ) return true;
     else return false;
@@ -39,9 +39,9 @@ bool Data::getXmlBool(const std::string& tag) const {
 }
 
 int Data::getXmlInt(const std::string& tag) const {
-  std::map<std::string, std::string>::const_iterator ptr = savedData.find(tag);
+  auto ptr = savedData.find(tag);
   if ( ptr == savedData.end() )
-    throw std::string("Didn't find integer tag ")+tag+std::string(" in xml");
+    throw std::string("Didn't find integer tag ")+tag;
   else {
     std::stringstream strm;
     strm << ptr->second;
@@ -52,9 +52,9 @@ int Data::getXmlInt(const std::string& tag) const {
 }
 
 float Data::getXmlFloat(const std::string& tag) const {
-  std::map<std::string, std::string>::const_iterator ptr = savedData.find(tag);
+  auto ptr = savedData.find(tag);
   if ( ptr == savedData.end() )
-    throw std::string("Didn't find float tag ")+tag+std::string(" in xml");
+    throw std::string("Didn't find float tag ")+tag;
   else {
     std::stringstream strm;
     strm << ptr->second;
@@ -63,16 +63,45 @@ float Data::getXmlFloat(const std::string& tag) const {
     return data;
   }
 }
+glm::vec4 Data::getXmlVec4(const std::string& tag) const {
+  auto ptr = savedData.find(tag);
+  if ( ptr == savedData.end() )
+    throw std::string("Didn't find vec4 tag ")+tag;
+  else {
+    glm::vec4 result;
+    std::string part;
+    std::stringstream ss(ptr->second);
+    for(int i = 0; std::getline(ss, part, ','); i++) {
+      result[i] = stof(part);
+    }
+    return result;
+  }
+}
+glm::vec3 Data::getXmlVec3(const std::string& tag) const {
+  auto ptr = savedData.find(tag);
+  if ( ptr == savedData.end() )
+    throw std::string("Didn't find vec3 tag ")+tag;
+  else {
+    glm::vec3 result;
+    std::string part;
+    std::stringstream ss(ptr->second);
+    for(int i = 0; std::getline(ss, part, ','); i++) {
+      result[i] = stof(part);
+    }
+    return result;
+  }
+}
+
 
 std::string Data::getXmlStr(const std::string& tag) const {
-  std::map<std::string, std::string>::const_iterator ptr = savedData.find(tag);
+  auto ptr = savedData.find(tag);
   if ( ptr == savedData.end() )
-    throw std::string("Didn't find string tag ")+tag+std::string(" in xml");
+    throw std::string("Didn't find string tag ")+tag;
   else return ptr->second;
 }
 
 void Data::displayData() const {
-  std::map<std::string, std::string>::const_iterator ptr = savedData.begin();
+  auto ptr = savedData.begin();
   while ( ptr != savedData.end() ) {
     std::cerr << ptr->first << ", " << ptr->second << std::endl;
     ++ptr;

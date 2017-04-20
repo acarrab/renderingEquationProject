@@ -1,6 +1,6 @@
 #ifndef __GAMEDATA_H__
 #define __GAMEDATA_H__
-#include <iostream>
+#include "common.h"
 #include "parseXML.h"
 
 class Data {
@@ -17,6 +17,9 @@ public:
   float getRandInRange(int min, int max) const;
   float getRandFloat(float min, float max) const;
   bool  checkTag(const std::string&)const;
+
+  glm::vec4 getXmlVec4(const std::string&)const;
+  glm::vec3 getXmlVec3(const std::string&)const;
 
 private:
   ParseXML parser;

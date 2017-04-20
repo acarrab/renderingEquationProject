@@ -1,28 +1,5 @@
 #include "../include/objectHandler.h"
 
-
-
-//converts to triangles
-void triangularize(std::vector<GLfloat> &data,
-		   std::vector< std::vector< std::vector<int> > > &f,
-		   std::vector< std::vector<GLfloat> > &v,
-		   int index) {
- for (auto face : f) {
-    for (int i = 0; i < 3; i++)
-      for (GLfloat point : v[face[i][index] - 1]) data.push_back(point);
-    for (int i = 2; i < 5; i++)
-      for (GLfloat point : v[face[i%4][index] - 1]) data.push_back(point);
-  }
-}
-void baseConvert(std::vector<GLfloat> &data,
-		 std::vector< std::vector< std::vector<int> > > &f,
-		 std::vector< std::vector<GLfloat> > &v,
-		 int index) {
-  for (auto face : f)
-    for (int i = 0; i < 3; i++)
-      for (GLfloat point : v[face[i][index] - 1]) data.push_back(point);
-}
-
 std::vector<int> parseFace(std::string s) {
   std::vector<int> x;
   std::stringstream ss(s);
@@ -30,11 +7,15 @@ std::vector<int> parseFace(std::string s) {
   return x;
 }
 
-read_data * ObjectHandler::getDataFromFile(std::string fileName) {
-  read_data *d = new read_data();
-  std::ifstream fin(fileName);
+void ObjectHandler::loadDataFromFile(const std::string &objectName) {
+  static Data &xml = Data::getInstance();
+  objects[objectName] = ReadData();
+  ReadData *d = &objects[objectName];
+  std::ifstream fin(xml.getXmlStr(objectName + "/objFile"));
   if (!fin.is_open()) {
-    std::cout << "Failed to open " << fileName << std::endl;
+    std::cout << "Failed to open "
+	      << xml.getXmlStr(objectName + "/objFile")
+	      << std::endl;
   }
   std::string tag, s;
   while (fin >> tag) {
@@ -50,7 +31,8 @@ read_data * ObjectHandler::getDataFromFile(std::string fileName) {
       else if (tag == "vx") d->vx.push_back(v);
       else if (tag == "vy") d->vy.push_back(v);
       else std::cerr << "UNKNOWN TAG: " << tag << ' ' << s << std::endl;
-    } else if (tag[0] == 'f') {
+    }
+    else if (tag[0] == 'f') {
       std::stringstream ss(s);
       std::string face;
       std::vector< std::vector<int> > all;
@@ -63,85 +45,33 @@ read_data * ObjectHandler::getDataFromFile(std::string fileName) {
       std::cerr << "UNKNOWN TAG: " << tag << ' ' << s << std::endl;
     }
   }
-  return d;
 }
 
 
-const Draw_Data & ObjectHandler::generate(const std::string &objectName) {
-  static Data &xml = Data::getInstance();
+const ReadData & ObjectHandler::generate(const std::string &objectName) {
   if (objects.count(objectName)) return objects[objectName];
-  /*
-    In order to generate a program we have to load the vertex
-    information and store it in vbo
-  */
-  //set shader
-  //if quads we have to convert to triangles
-  std::string fileName = xml.getXmlStr(objectName + "/objFile");
-  read_data *rd = getDataFromFile(fileName);
-  Draw_Data drawData;
-  std::vector<GLfloat> data;
-  void (*convert)(std::vector<GLfloat> &data,
-		     std::vector< std::vector< std::vector<int> > > &f,
-		     std::vector< std::vector<GLfloat> > &v,
-		  int index);
+  //load the data since it isn't there yet
+  loadDataFromFile(objectName);
+  const ReadData *rd = &objects[objectName];
+  //print out info, not really necessary
+  std::cout << "------------------------ "
+	    << objectName << " info "
+	    << "------------------------"
+	    << std::endl;
 
+  GLfloat a[3], b[3];
+  for (int i = 0; i < 3; i++) a[i] = b[i] = rd->v[0][i];
+  for (auto vert : rd->v)
+    for (int i = 0; i < 3; i++) {
+      a[i] = std::min(a[i], vert[i]);
+      b[i] = std::max(b[i], vert[i]);
+    }
 
-  //set buffer generator
-  auto genBuf = [](std::vector<GLfloat> &data)->GLuint{
-    GLuint tmpId;
-    glGenBuffers(1, &tmpId);
-    glBindBuffer(GL_ARRAY_BUFFER, tmpId);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat)*data.size(),
-		 &data[0], GL_STATIC_DRAW);
-    return tmpId;
-  };
-  //set conversion
-  if (xml.getXmlBool(objectName + "/quads")) {
-    convert = &triangularize;
-  } else {
-    convert = &baseConvert;
-  }
-  //get vertice data
-  int face = 0;
-  convert(data, rd->f, rd->v, face);//converts data to triangles
-  drawData.setVertexCount(data.size() / 3);   //from quads
-  drawData.setVertexType(GL_TRIANGLES);
+  std::cout << "Dimensions: " << std::endl
+	    << "\tx: (" << a[0] << ", " << b[0] << ")" << std::endl
+	    << "\ty: (" << a[1] << ", " << b[1] << ")" << std::endl
+	    << "\tz: (" << a[2] << ", " << b[2] << ")" << std::endl;
 
-  //load data to gpu, then push it back VBO_Data
-  drawData.push_back(VBO_Data(genBuf(data), 0, 3));
-
-  //tangents
-  if (rd->vx.size() && rd->vy.size()) {
-    data.resize(0); //does not change underlying capacity, i.e. no new mallocs
-    convert(data, rd->f, rd->vx, face);
-    //load data to gpu then push it back VBO_Data
-    drawData.push_back(VBO_Data(genBuf(data), 3, 3));
-
-    data.resize(0);
-    convert(data, rd->f, rd->vy, face);
-    //load data to gpu then push it back VBO_Data
-    drawData.push_back(VBO_Data(genBuf(data), 4, 3));
-  }
-
-  if (rd->vt.size()) {
-    face++;
-    data.resize(0);
-    convert(data, rd->f, rd->vt, face);
-    //load data to gpu then push it back VBO_Data
-    drawData.push_back(VBO_Data(genBuf(data), 1, 2));
-    //only 2 for texture
-  }
-
-  if (rd->vn.size()) {
-    face++;
-    data.resize(0);
-    convert(data, rd->f, rd->vn, face);
-    drawData.push_back(VBO_Data(genBuf(data), 2, 3));
-  }
-  delete rd;
-
-
-  //we now have drawData which contains all attributes and whatnot
-  objects[objectName] = drawData;
+  //we now have ReadData which contains parsed data
   return objects[objectName];
 }

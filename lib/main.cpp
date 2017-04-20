@@ -1,22 +1,7 @@
-#define GL_GLEXT_PROTOTYPES 1
-#define GL3_PROTOTYPES 1
-#include <GL/glew.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include <GL/glut.h>
-#include <GL/glx.h>
-#include <GL/glext.h>
-
-#include <iostream>
-#include <vector>
-#include <cstdio>
-#include <cstdlib>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
-
+#include "../include/common.h"
 #include "../include/data.h"
 #include "../include/teapot.h"
+#include "../include/box.h"
 
 void keyboardHandler(unsigned char key, int x, int y) {
   switch(key) {
@@ -27,10 +12,12 @@ void keyboardHandler(unsigned char key, int x, int y) {
   }
 }
 
-
 void displayHander() {
   static Teapot tp(Data::g().getXmlStr("teapot/shader"));
-  tp.draw();
+  static Box box(Data::g().getXmlStr("box/shader"));
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  tp.display();
+  box.display();
   glutSwapBuffers();
 }
 

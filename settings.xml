@@ -3,16 +3,34 @@
 <window>
   <x>100</x>
   <y>100</y>
-  <width>800</width>
-  <height>800</height>
+
+
+  <width>640</width>
+  <height>512</height>
+
+  <width>1280</width>
+  <height>1024</height>
+
   <title>Rendering Equation Approximation</title>
 </window>
 
+<cam>
+  <pos>0,8,20</pos>
+  <towards>0,8,0</towards>
+</cam>
+
+<perspective>
+  <fov>45.0</fov>
+  <nearClip>.1</nearClip>
+  <farClip>100</farClip>
+</perspective>
 
 <teapot>
   <objFile>/home/acarrab/Desktop/renderingEquationProject/resources/teapot/teapot.obj</objFile>
   <shader>teapotShader</shader>
-  <quads>true</quads>
+  <diffuse>0.0,0.0,1.0,1.0</diffuse>
+  <specular>1.0,1.0,1.0,1.0</specular>
+  <shininess>2.0</shininess>
 </teapot>
 
 <teapotShader>
@@ -20,15 +38,24 @@
   <frag>/home/acarrab/Desktop/renderingEquationProject/resources/teapot/prog.frag</frag>
 </teapotShader>
 
-
-
 <box>
-  <objFile>resources/box/box.obj</objFile>
-  <shader>boxShader</shader>
-  <quads>false</quads>
+  <shader>teapotShader</shader>
+  <rowColNum>10</rowColNum>
+  <width>16</width>
+  <diffuse1>1.0,0.0,0.0,1.0</diffuse1>
+  <specular1>1.0,1.0,1.0,1.0</specular1>
+  <shininess1>2.0</shininess1>
+
+  <diffuse2>1.0,1.0,1.0,1.0</diffuse2>
+  <specular2>1.0,1.0,1.0,1.0</specular2>
+  <shininess2>2.0</shininess2>
+
+  <diffuse3>0.0,1.0,0.0,1.0</diffuse3>
+  <specular3>1.0,1.0,1.0,1.0</specular3>
+  <shininess3>2.0</shininess3>
 </box>
 
 <boxShader>
-  <vert>resources/box/prog.vert</vert>
-  <frag>resources/box/prog.frag</frag>
+  <vert>/home/acarrab/Desktop/renderingEquationProject/resources/box/prog.vert</vert>
+  <frag>/home/acarrab/Desktop/renderingEquationProject/resources/box/prog.frag</frag>
 </boxShader>
