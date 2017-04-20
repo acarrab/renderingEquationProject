@@ -1,2 +1,0 @@
-* Rendering Equation Project
-** This is going to be written in C++
