@@ -44,7 +44,10 @@ Box::Box(const std::string &programName) :
     //0, 3, 1 | x
     for (int v = 0; v < 3; v++) {
       for (int b = 0; b < 2; b++) {
-	unsigned int i = x << 2 +
+	//100
+	//
+	buffers << corners[b<<(2 - v)] << corners[] << corners[7^(b << (2 - v))];
+	buffers << corners[b<<(2 - v)] << corners[7^(b << (2 - v))] << corners[];
 	  buffer.data, corners[x][0][0]), corners[x][1][0]), corners[x][1][1]);
 	in(in(in(buffer.data, corners[x][0][0]), corners[x][1][1]), corners[x][0][1]);
     }
