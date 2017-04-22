@@ -1,16 +1,8 @@
 #include "../include/genericObject.h"
-GenericObject::GenericObject(const std::string &programName) :
-  oh(ObjectHandler::getInstance()),
-  sh(ShaderHandler::getInstance()),
-  //things that need to load their uniform data attributes.
-  uniformList({&LightHandler::getInstance(), &PerspectiveHandler::getInstance()}),
-  programId(sh.getProgramId(programName))
-{}
+DataHandler *GenericObject::dh = nullptr;
+ObjectHandler *GenericObject::oh = nullptr;
 
-void GenericObject::displayStart() {
-  glUseProgram(programId);
-  for (UniformHandler *uh : uniformList) uh->loadElements(programId);
-}
-void GenericObject::displayStop() {
-  glUseProgram(0);
+GenericObject::GenericObject() {
+  if (dh == nullptr) dh = &DataHandler::getInstance();
+  if (oh == nullptr) oh = &ObjectHandler::getInstance();
 }

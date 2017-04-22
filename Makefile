@@ -1,4 +1,4 @@
-CC = clang++ -std=c++11 -I/usr/include -I/usr/X11R6/include -L/usr/lib -L/usr/X11R6/lib -L/usr/lib64 -O0
+CC = clang++ -std=c++11 -I/usr/include -I/usr/X11R6/include -L/usr/lib -L/usr/X11R6/lib -L/usr/lib64 -O3
 # # CC = clang++
 LDFLAGS = -lGLEW -lGL -lGLU -lX11 -lpthread -lXrandr -lglut -lXi -lXmu -lm -lexpat
 CXXFLAGS= -g -W -Wall -std=c++11 -Weffc++ -Wextra -pedantic

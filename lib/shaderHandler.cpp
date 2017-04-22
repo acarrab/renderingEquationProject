@@ -64,10 +64,9 @@ GLuint ShaderHandler::compileProgram(std::string vertLoc, std::string fragLoc) {
 }
 
 GLuint ShaderHandler::getProgramId(const std::string &type) {
-  static Data &xml = Data::getInstance();
   if (!loadedPrograms.count(type)) {
-    loadedPrograms[type] = compileProgram(xml.getXmlStr(type + "/vert"),
-					  xml.getXmlStr(type + "/frag"));
+    loadedPrograms[type] = compileProgram(dh.getXmlStr(type + "/vert"),
+					  dh.getXmlStr(type + "/frag"));
   }
   return loadedPrograms[type];
 }

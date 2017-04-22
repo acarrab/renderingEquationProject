@@ -4,7 +4,7 @@
 
 #include <map>
 
-#include "data.h"
+#include "dataHandler.h"
 
 struct ReadData {
   std::vector< std::vector<float> > v, vt, vn, vx, vy;
@@ -12,12 +12,14 @@ struct ReadData {
 };
 
 class ObjectHandler {
+  DataHandler &dh;
   //flyweight - so we don't re-read stuff
   std::map<std::string, ReadData> objects;
   //gets data from file and stores it in map
   void loadDataFromFile(const std::string &objectName);
   //handles flyweight stuff
   const ReadData& generate(const std::string &objectName);
+  ObjectHandler() : dh(DataHandler::getInstance()), objects() {}
 public:
   //make it a singleton
   static ObjectHandler& getInstance() {

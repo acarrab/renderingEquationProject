@@ -22,8 +22,9 @@ class Box : public GenericObject {
   static BufferData buffer;
   GLuint rtnMtxId, diffuseId, specularId, shineId;
   glm::mat4 rtn;
-  glm::vec4 diffuseColor[3], specularColor[3];
-  GLfloat shininess[3];
+  //should be 3
+  std::vector<glm::vec4> diffuseColor, specularColor;
+  std::vector<GLfloat> shininess;
 public:
   Box(const std::string &programName);
   void display();

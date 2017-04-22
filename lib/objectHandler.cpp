@@ -8,13 +8,12 @@ std::vector<int> parseFace(std::string s) {
 }
 
 void ObjectHandler::loadDataFromFile(const std::string &objectName) {
-  static Data &xml = Data::getInstance();
   objects[objectName] = ReadData();
   ReadData *d = &objects[objectName];
-  std::ifstream fin(xml.getXmlStr(objectName + "/objFile"));
+  std::ifstream fin(dh.getXmlStr(objectName + "/objFile"));
   if (!fin.is_open()) {
     std::cout << "Failed to open "
-	      << xml.getXmlStr(objectName + "/objFile")
+	      << dh.getXmlStr(objectName + "/objFile")
 	      << std::endl;
   }
   std::string tag, s;

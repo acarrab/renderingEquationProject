@@ -3,15 +3,14 @@
 #include "common.h"
 
 #include <map>
-
-#include "data.h"
-
+#include "dataHandler.h"
 class ShaderHandler {
+  DataHandler &dh;
   //reads the file
   std::string readFile(const std::string &filePath);
   //singleton
   std::map<std::string, GLuint> loadedPrograms;
-  ShaderHandler() {};
+  ShaderHandler() : dh(DataHandler::getInstance()), loadedPrograms() {};
   bool compileMyShader(GLuint shader, std::string loc);
   GLuint compileProgram(std::string vert, std::string frag);
 public:

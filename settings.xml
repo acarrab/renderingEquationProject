@@ -1,61 +1,72 @@
 <?xml version = "1.0"?>
 <Data>
-<window>
-  <x>100</x>
-  <y>100</y>
+  <window>
+    <x>100</x>
+    <y>100</y>
+
+    <width>1280</width>
+    <height>1024</height>
+
+    <title>Rendering Equation Approximation</title>
+  </window>
 
 
-  <width>640</width>
-  <height>512</height>
+  <!-- Camera position -->
+  <cam>
+    <pos>0,4,8</pos>
+    <towards>0,4,0</towards>
+  </cam>
 
-  <width>1280</width>
-  <height>1024</height>
 
-  <title>Rendering Equation Approximation</title>
-</window>
+  <!-- basic light settings -->
+  <light>
+    <pos>0,4,0</pos>
+    <dir>0,1,0</dir>
+    <!-- Set all of the number of radiosity iterations here -->
+    <iterations>20</iterations>
+  </light>
 
-<cam>
-  <pos>0,8,20</pos>
-  <towards>0,8,0</towards>
-</cam>
+  <perspective>
+    <fov>75.0</fov>
+    <nearClip>4.0</nearClip>
+    <farClip>20</farClip>
+  </perspective>
 
-<perspective>
-  <fov>45.0</fov>
-  <nearClip>.1</nearClip>
-  <farClip>100</farClip>
-</perspective>
+  <teapot>
+    <objFile>resources/teapot/teapot.obj</objFile>
+    <shader>teapotShader</shader>
+    <diffuse>0.0,1.0,1.0,1.0</diffuse>
+    <specular>1.0,1.0,1.0,1.0</specular>
+    <shininess>4.0</shininess>
+  </teapot>
 
-<teapot>
-  <objFile>/home/acarrab/Desktop/renderingEquationProject/resources/teapot/teapot.obj</objFile>
-  <shader>teapotShader</shader>
-  <diffuse>0.0,0.0,1.0,1.0</diffuse>
-  <specular>1.0,1.0,1.0,1.0</specular>
-  <shininess>2.0</shininess>
-</teapot>
+  <teapotShader>
+    <vert>resources/teapot/prog.vert</vert>
+    <frag>resources/teapot/prog.frag</frag>
+  </teapotShader>
 
-<teapotShader>
-  <vert>/home/acarrab/Desktop/renderingEquationProject/resources/teapot/prog.vert</vert>
-  <frag>/home/acarrab/Desktop/renderingEquationProject/resources/teapot/prog.frag</frag>
-</teapotShader>
+  <box>
+    <shader>teapotShader</shader>
+    <rowColNum>10</rowColNum>
+    <width>8</width>
+    <displace>0</displace>
+  </box>
 
-<box>
-  <shader>teapotShader</shader>
-  <rowColNum>10</rowColNum>
-  <width>16</width>
-  <diffuse1>1.0,0.0,0.0,1.0</diffuse1>
-  <specular1>1.0,1.0,1.0,1.0</specular1>
-  <shininess1>2.0</shininess1>
+  <wallLeft>
+    <diffuse>1.0,0.0,0.0,.5</diffuse>
+    <specular>1.0,1.0,1.0,.5</specular>
+    <shininess>2.0</shininess>
+  </wallLeft>
 
-  <diffuse2>1.0,1.0,1.0,1.0</diffuse2>
-  <specular2>1.0,1.0,1.0,1.0</specular2>
-  <shininess2>2.0</shininess2>
+  <wallRight>
+    <diffuse>0.0,1.0,0.0,.5</diffuse>
+    <specular>1.0,1.0,1.0,.5</specular>
+    <shininess>2.0</shininess>
+  </wallRight>
 
-  <diffuse3>0.0,1.0,0.0,1.0</diffuse3>
-  <specular3>1.0,1.0,1.0,1.0</specular3>
-  <shininess3>2.0</shininess3>
-</box>
-
-<boxShader>
-  <vert>/home/acarrab/Desktop/renderingEquationProject/resources/box/prog.vert</vert>
-  <frag>/home/acarrab/Desktop/renderingEquationProject/resources/box/prog.frag</frag>
-</boxShader>
+  <wallOther>
+    <diffuse>1.0,1.0,1.0,.5</diffuse>
+    <specular>1.0,1.0,1.0,.5</specular>
+    <shininess>2.0</shininess>
+  </wallOther>
+</Data>

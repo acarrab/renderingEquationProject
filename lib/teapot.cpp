@@ -14,21 +14,17 @@ void fromQuads(const std::vector< std::vector< std::vector<int> > > &faceVec,
 	data.push_back(val);
   }
 }
-Teapot::Teapot(const std::string &programName) :
-    GenericObject(programName),
-    rtnMtxId(glGetUniformLocation(getProgramId(), "rotationMtx")),
-    diffuseId(glGetUniformLocation(getProgramId(), "diffuseColor")),
-    specularId(glGetUniformLocation(getProgramId(), "specularColor")),
-    shineId(glGetUniformLocation(getProgramId(), "shine")),
-    rtn(glm::rotate(45.0f, glm::vec3(0.0, 1.0, 0.0))),
-    diffuseColor(Data::g().getXmlVec4("teapot/diffuse")),
-    specularColor(Data::g().getXmlVec4("teapot/specular")),
-    shininess(Data::g().getXmlFloat("teapot/shininess"))
+Teapot::Teapot() :
+  GenericObject(),
+  rtn(glm::rotate(90.0f, glm::vec3(0.0, 1.0, 0.0))),
+  diffuseColor(dh->getXmlVec4("teapot/diffuse")),
+  specularColor(dh->getXmlVec4("teapot/specular")),
+  shininess(dh->getXmlFloat("teapot/shininess"))
 {
   if (!buffer.instantiated) {
     buffer.instantiated = true;
     //load the data
-    const ReadData &parsedStuff = oh.getDataFor("teapot");
+    const ReadData &parsedStuff = oh->getDataFor("teapot");
 
     buffer.vertCount = parsedStuff.f.size() * 6;
     //convert
@@ -58,7 +54,6 @@ Teapot::Teapot(const std::string &programName) :
     fromQuads(parsedStuff.f, parsedStuff.vy, buffer.data, 0);*/
 
     glGenBuffers(1, &buffer.id);
-    std::cout << buffer.id << std::endl;
     glBindBuffer(GL_ARRAY_BUFFER, buffer.id);
     glBufferData(GL_ARRAY_BUFFER,
 		 sizeof(GLfloat) * buffer.data.size(),
@@ -67,27 +62,31 @@ Teapot::Teapot(const std::string &programName) :
   }
 }
 
-void Teapot::display() {
-  displayStart();
+void Teapot::loadAttributes(GLuint programId) {
+  GLuint id = glGetUniformLocation(programId, "rotationMtx");
+  glUniformMatrix4fv(id, 1, GL_FALSE, &rtn[0][0]);
 
-  glUniformMatrix4fv(rtnMtxId, 1, GL_FALSE, &rtn[0][0]);
-  glUniform4f(diffuseId, diffuseColor.r, diffuseColor.g,
+  id = glGetUniformLocation(programId, "diffuseColor");
+  glUniform4f(id, diffuseColor.r, diffuseColor.g,
 	      diffuseColor.b, diffuseColor.a);
-  glUniform4f(specularId, specularColor.r, specularColor.g,
-	      specularColor.b, specularColor.a);
-  glUniform1f(shineId, shininess);
 
-  //glGetUniformLocation();
+  id = glGetUniformLocation(programId, "specularColor");
+  glUniform4f(id, specularColor.r, specularColor.g,
+	      specularColor.b, specularColor.a);
+
+  id = glGetUniformLocation(programId, "shine");
+  glUniform1f(id, shininess);
+}
+void Teapot::drawVerts() {
   glBindBuffer(GL_ARRAY_BUFFER, buffer.id);
-  for (int i = 0; i < buffer.addresses.size(); i++) {
+  for (unsigned int i = 0; i < buffer.addresses.size(); i++) {
     glEnableVertexAttribArray(i);
     glVertexAttribPointer(i, buffer.elements[i], GL_FLOAT,
 			  GL_FALSE, 0, buffer.addresses[i]);
   }
-
+  //drawing
   glDrawArrays(GL_TRIANGLES, 0, buffer.vertCount);
 
-  for (int i = 0; i < buffer.addresses.size(); i++)
+  for (unsigned int i = 0; i < buffer.addresses.size(); i++)
     glDisableVertexAttribArray(i);
-
 }
