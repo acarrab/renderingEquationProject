@@ -24,6 +24,9 @@
     <dir>0,1,0</dir>
     <!-- Set all of the number of radiosity iterations here -->
     <iterations>20</iterations>
+    <Ld>1.0,1.0,1.0</Ld>
+    <Ls>1.0,1.0,1.0</Ls>
+    <La>1.0,1.0,1.0</La>
   </light>
 
   <perspective>
@@ -33,16 +36,17 @@
   </perspective>
 
   <teapot>
-    <objFile>resources/teapot/teapot.obj</objFile>
+    <objFile>/home/acarrab/Desktop/renderingEquationProject/resources/teapot/teapot.obj</objFile>
     <shader>teapotShader</shader>
-    <diffuse>0.0,1.0,1.0,1.0</diffuse>
-    <specular>1.0,1.0,1.0,1.0</specular>
-    <shininess>4.0</shininess>
+    <Kd>0.0,1.0,1.0</Kd>
+    <Ks>0.0,1.0,1.0</Ks>
+    <Ka>.1,.1,.1</Ka>
+    <Ns>10.0</Ns>
   </teapot>
 
   <teapotShader>
-    <vert>resources/teapot/prog.vert</vert>
-    <frag>resources/teapot/prog.frag</frag>
+    <vert>/home/acarrab/Desktop/renderingEquationProject/resources/teapot/prog.vert</vert>
+    <frag>/home/acarrab/Desktop/renderingEquationProject/resources/teapot/prog.frag</frag>
   </teapotShader>
 
   <box>
@@ -53,20 +57,23 @@
   </box>
 
   <wallLeft>
-    <diffuse>1.0,0.0,0.0,.5</diffuse>
-    <specular>1.0,1.0,1.0,.5</specular>
-    <shininess>2.0</shininess>
+    <Kd>1.0,0.0,0.0</Kd>
+    <Ks>1.0,0.0,0.0</Ks>
+    <Ka>0.1,0.1,0.1</Ka>
+    <Ns>10.0</Ns>
   </wallLeft>
 
   <wallRight>
-    <diffuse>0.0,1.0,0.0,.5</diffuse>
-    <specular>1.0,1.0,1.0,.5</specular>
-    <shininess>2.0</shininess>
+    <Kd>0.0,1.0,0.0</Kd>
+    <Ks>0.0,1.0,0.0</Ks>
+    <Ka>0.1,0.1,0.1</Ka>
+    <Ns>10.0</Ns>
   </wallRight>
 
   <wallOther>
-    <diffuse>1.0,1.0,1.0,.5</diffuse>
-    <specular>1.0,1.0,1.0,.5</specular>
-    <shininess>2.0</shininess>
+    <Kd>1.0,1.0,1.0</Kd>
+    <Ks>0.1,.1,.1</Ks>
+    <Ka>0.1,0.1,0.1</Ka>
+    <Ns>10.0</Ns>
   </wallOther>
 </Data>

@@ -1,28 +1,23 @@
 #version 330 core
 out vec4 color;
-in vec4 norm, pos;
+in vec3 norm, pos;
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Camera ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+uniform vec3 cameraPosition;
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Light ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-uniform vec3 lightPosition;
-uniform vec3 lightDirection;
+uniform vec3 lightPosition, lightDirection;
+uniform vec3 La, Ld, Ls;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Teapot ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-uniform vec4 diffuseColor;
-uniform vec4 specularColor;
-uniform float shine;
+uniform vec3 Ka, Kd, Ks;
+uniform float Ns;
 
 void main() {
-    vec3 P, N, L, V, H;
-    float pi = 3.14159265;
-    P = vec3(pos);
-    N = normalize(vec3(norm));
-    L = normalize(lightPosition - P);
-    V = normalize(-P);
-    H = normalize(L + V);
+    vec3 diffuse, specular, D, R;
+    diffuse = Kd * Ld * max(0.0, dot(normalize(-vec3(lightDirection)),  normalize(norm)))*.00001;
 
-    vec4 diffuse = diffuseColor;
-    vec4 specular = specularColor;
+    D = normalize(pos - lightPosition);
+    R = normalize(D - norm * 2 * (dot(D, norm)));
+    specular = Ks * Ls * pow(max(0.0, dot(R, -D)), Ns);
 
-    diffuse *= max(dot(N, L), 0.0);
-    specular *= ((shine + 2.0)/(8.0*pi))*pow(max(dot(H, N), 0.0), shine);
-    color = (diffuse + specular);
+    color = vec4(Ka * La + diffuse + specular, 1.0);
 }

@@ -6,14 +6,22 @@ std::ostream & operator<<(std::ostream& os, const glm::vec3 &test) {
 }
 
 void LightHandler::loadAttributes(GLuint programId) {
-  GLuint tmp;
-  tmp = glGetUniformLocation(programId, "lightPosition");
-  glUniform3f(tmp, position.x, position.y, position.z);
+  GLuint id;
+  id = glGetUniformLocation(programId, "lightPosition");
+  glUniform3f(id, position.x, position.y, position.z);
 
-  tmp = glGetUniformLocation(programId, "lightDirection");
-  glUniform3f(tmp, direction.x, direction.y, direction.z);
+  id = glGetUniformLocation(programId, "lightDirection");
+  glUniform3f(id, direction.x, direction.y, direction.z);
 
-  std::cout << direction << std::endl;
+  //light color
+  id = glGetUniformLocation(programId, "La");
+  glUniform3f(id, color.Ka.r, color.Ka.g, color.Ka.b);
+
+  id = glGetUniformLocation(programId, "Ld");
+  glUniform3f(id, color.Kd.r, color.Kd.g, color.Kd.b);
+
+  id = glGetUniformLocation(programId, "Ls");
+  glUniform3f(id, color.Ks.r, color.Ks.g, color.Ks.b);
 }
 
 float phi(int b, int i) {
@@ -26,9 +34,21 @@ float phi(int b, int i) {
   return x;
 }
 void LightHandler::next() {
-  current %= iterations;
-  float az = 2 * PI * phi(2, current);
-  float el = asin(phi(3, current));
-  direction = glm::vec3(-sin(az) * cos(el), -abs(sin(el)), cos(az) * cos(el));
-  current++;
+  static int i = 0;
+  if (!(i % (bounces + 1))) {
+    current %= iterations;
+    float az = 2 * PI * phi(2, current);
+    float el = asin(phi(3, current));
+    direction = glm::vec3(-sin(az) * cos(el), sin(el), cos(az) * cos(el));
+    current++;
+    i = 1;
+  } else {
+    Intersects intersect;
+    for (auto thing : gh) thing->getIntersects(intersect);
+    if (intersect.t < 0) {
+      std::cerr << "there should be an intersection..." << std::endl;
+      i = 0;
+    }
+  }
+  i++;
 }

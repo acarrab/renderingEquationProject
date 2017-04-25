@@ -18,15 +18,17 @@ std::vector<glm::vec3> & operator<<(std::vector<glm::vec3> &out,
 }
 
 Wall::Wall() :
-  GenericObject(),
+  GenericObject(types[std::min(2, instance)]),
   myInstance(instance),
   myType(types[std::min(2, instance)]),
   rtn(glm::rotate(0.0f, glm::vec3(0.0, 1.0, 0.0))),
+  wallCoords()
+{
+  /*
   diffuseColor(dh->getXmlVec4(myType+"/diffuse")),
   specularColor(dh->getXmlVec4(myType+"/specular")),
   shininess(dh->getXmlFloat(myType+"/shininess")),
-  wallCoords()
-{
+  */
   float w = dh->getXmlFloat("box/width");
   glm::vec3 normal;
   if (instance == 0) {
@@ -109,24 +111,14 @@ Wall::Wall() :
 		 &buffer.data[0],
 		 GL_STATIC_DRAW);
   }
+  buffer.process();
   instance++;
 }
 void Wall::loadAttributes(GLuint programId)  {
+  GenericObject::loadAttributes(programId);
 
   GLuint id = glGetUniformLocation(programId, "rotationMtx");
   glUniformMatrix4fv(id, 1, GL_FALSE, &rtn[0][0]);
-
-  id = glGetUniformLocation(programId, "diffuseColor");
-  glUniform4f(id, diffuseColor.r, diffuseColor.g,
-	      diffuseColor.b, diffuseColor.a);
-
-  id = glGetUniformLocation(programId, "specularColor");
-  glUniform4f(id, specularColor.r, specularColor.g,
-	      specularColor.b, specularColor.a);
-
-  id = glGetUniformLocation(programId, "shine");
-  glUniform1f(id, shininess);
-
 }
 void Wall::drawVerts() {
   if (myInstance >= 5) return;

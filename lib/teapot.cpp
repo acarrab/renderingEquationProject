@@ -1,5 +1,4 @@
 #include "../include/teapot.h"
-BufferData Teapot::buffer = BufferData();
 void fromQuads(const std::vector< std::vector< std::vector<int> > > &faceVec,
 	       const std::vector< std::vector< GLfloat > > &vertex,
 	       std::vector<GLfloat> &data,
@@ -15,67 +14,62 @@ void fromQuads(const std::vector< std::vector< std::vector<int> > > &faceVec,
   }
 }
 Teapot::Teapot() :
-  GenericObject(),
-  rtn(glm::rotate(90.0f, glm::vec3(0.0, 1.0, 0.0))),
-  diffuseColor(dh->getXmlVec4("teapot/diffuse")),
-  specularColor(dh->getXmlVec4("teapot/specular")),
-  shininess(dh->getXmlFloat("teapot/shininess"))
+  GenericObject("teapot"),
+  rtn(glm::rotate(90.0f, glm::vec3(0.0, 1.0, 0.0)))
 {
-  if (!buffer.instantiated) {
-    buffer.instantiated = true;
-    //load the data
-    const ReadData &parsedStuff = oh->getDataFor("teapot");
 
-    buffer.vertCount = parsedStuff.f.size() * 6;
-    //convert
-    //buffer vertices
-    buffer.addresses.push_back((void *) 0);
-    buffer.elements.push_back(3);
-    fromQuads(parsedStuff.f, parsedStuff.v, buffer.data, 0);
+  /* has to be set eventually in other thing
 
-    //buffer texture coords
-    buffer.addresses.push_back((void *)(buffer.data.size() * sizeof(GLfloat)));
-    buffer.elements.push_back(2);
-    fromQuads(parsedStuff.f, parsedStuff.vt, buffer.data, 1);
+     diffuseColor(dh->getXmlVec4("teapot/diffuse")),
+     specularColor(dh->getXmlVec4("teapot/specular")),
+     shininess(dh->getXmlFloat("teapot/shininess"))
 
-    //buffer normals
-    buffer.addresses.push_back((void *)(buffer.data.size() * sizeof(GLfloat)));
-    buffer.elements.push_back(3);
-    fromQuads(parsedStuff.f, parsedStuff.vn, buffer.data, 2);
+  */
+  //load the data
+  const ReadData &parsedStuff = oh->getDataFor("teapot");
 
-    //buffer tangent x
-    /*    buffer.addresses.push_back((void *)(buffer.data.size() * sizeof(GLfloat)));
-    buffer.elements.push_back(3);
-    fromQuads(parsedStuff.f, parsedStuff.vx, buffer.data, 0);
+  buffer.vertCount = parsedStuff.f.size() * 6;
+  //convert
+  //buffer vertices
+  buffer.addresses.push_back((void *) 0);
+  buffer.elements.push_back(3);
+  fromQuads(parsedStuff.f, parsedStuff.v, buffer.data, 0);
 
-    //buffer tangent y
-    buffer.addresses.push_back((void *)(buffer.data.size() * sizeof(GLfloat)));
-    buffer.elements.push_back(3);
-    fromQuads(parsedStuff.f, parsedStuff.vy, buffer.data, 0);*/
+  //buffer texture coords
+  buffer.addresses.push_back((void *)(buffer.data.size() * sizeof(GLfloat)));
+  buffer.elements.push_back(2);
+  fromQuads(parsedStuff.f, parsedStuff.vt, buffer.data, 1);
 
-    glGenBuffers(1, &buffer.id);
-    glBindBuffer(GL_ARRAY_BUFFER, buffer.id);
-    glBufferData(GL_ARRAY_BUFFER,
-		 sizeof(GLfloat) * buffer.data.size(),
-		 &buffer.data[0],
-		 GL_STATIC_DRAW);
-  }
+  //buffer normals
+  buffer.addresses.push_back((void *)(buffer.data.size() * sizeof(GLfloat)));
+  buffer.elements.push_back(3);
+  fromQuads(parsedStuff.f, parsedStuff.vn, buffer.data, 2);
+
+  //buffer tangent x
+  /*    buffer.addresses.push_back((void *)(buffer.data.size() * sizeof(GLfloat)));
+	buffer.elements.push_back(3);
+	fromQuads(parsedStuff.f, parsedStuff.vx, buffer.data, 0);
+
+	//buffer tangent y
+	buffer.addresses.push_back((void *)(buffer.data.size() * sizeof(GLfloat)));
+	buffer.elements.push_back(3);
+	fromQuads(parsedStuff.f, parsedStuff.vy, buffer.data, 0);*/
+
+  glGenBuffers(1, &buffer.id);
+  glBindBuffer(GL_ARRAY_BUFFER, buffer.id);
+  glBufferData(GL_ARRAY_BUFFER,
+	       sizeof(GLfloat) * buffer.data.size(),
+	       &buffer.data[0],
+	       GL_STATIC_DRAW);
+
+  buffer.process();// called to generate proper normals
 }
 
 void Teapot::loadAttributes(GLuint programId) {
+  GenericObject::loadAttributes(programId);
+
   GLuint id = glGetUniformLocation(programId, "rotationMtx");
   glUniformMatrix4fv(id, 1, GL_FALSE, &rtn[0][0]);
-
-  id = glGetUniformLocation(programId, "diffuseColor");
-  glUniform4f(id, diffuseColor.r, diffuseColor.g,
-	      diffuseColor.b, diffuseColor.a);
-
-  id = glGetUniformLocation(programId, "specularColor");
-  glUniform4f(id, specularColor.r, specularColor.g,
-	      specularColor.b, specularColor.a);
-
-  id = glGetUniformLocation(programId, "shine");
-  glUniform1f(id, shininess);
 }
 void Teapot::drawVerts() {
   glBindBuffer(GL_ARRAY_BUFFER, buffer.id);

@@ -3,7 +3,9 @@
 #include "common.h"
 
 #include "objectHandler.h"
+class GenericObject;
 #include "genericObject.h"
+
 
 /*
 Teapot Dimensions:
@@ -19,11 +21,8 @@ class Wall : public GenericObject {
   static std::vector< std::string > types;
   int myInstance;
   std::string myType;
-  BufferData buffer;
   glm::mat4 rtn;
   //should be 3
-  glm::vec4 diffuseColor, specularColor;
-  GLfloat shininess;
   std::vector<glm::vec3> wallCoords;
 public:
   Wall();
