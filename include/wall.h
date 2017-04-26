@@ -26,6 +26,10 @@ class Wall : public GenericObject {
   std::vector<glm::vec3> wallCoords;
 public:
   Wall();
+  bool quickIntersectionTest(Intersects &intersect) const {
+    std::cout << myInstance << std::endl;
+    return true;
+  }
   void loadAttributes(GLuint programId);
   void drawVerts();
 };

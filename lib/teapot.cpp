@@ -13,6 +13,7 @@ void fromQuads(const std::vector< std::vector< std::vector<int> > > &faceVec,
 	data.push_back(val);
   }
 }
+
 Teapot::Teapot() :
   GenericObject("teapot"),
   rtn(glm::rotate(90.0f, glm::vec3(0.0, 1.0, 0.0)))

@@ -11,6 +11,7 @@ std::vector<GLfloat> & operator<<(std::vector<GLfloat> &out,
   out.push_back(vec.z);
   return out;
 }
+
 std::vector<glm::vec3> & operator<<(std::vector<glm::vec3> &out,
 				  const glm::vec3 &vec) {
   out.push_back(vec);
@@ -111,7 +112,13 @@ Wall::Wall() :
 		 &buffer.data[0],
 		 GL_STATIC_DRAW);
   }
-  buffer.process();
+  //just add in 2 triangles
+  buffer.verts << wallCoords[0] << wallCoords[1] << wallCoords[2]
+	       << wallCoords[0] << wallCoords[2] << wallCoords[3];
+  buffer.norms << glm::cross(buffer.verts[1] - buffer.verts[0],
+			     buffer.verts[2] - buffer.verts[0])
+	       << glm::cross(buffer.verts[4] - buffer.verts[3],
+			     buffer.verts[5] - buffer.verts[3]);
   instance++;
 }
 void Wall::loadAttributes(GLuint programId)  {

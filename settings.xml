@@ -25,7 +25,7 @@
     <!-- Set all of the number of radiosity iterations here -->
     <iterations>20</iterations>
     <Ld>1.0,1.0,1.0</Ld>
-    <Ls>1.0,1.0,1.0</Ls>
+    <Ls>0.0,0.0,0.0</Ls>
     <La>1.0,1.0,1.0</La>
   </light>
 

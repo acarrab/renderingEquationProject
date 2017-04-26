@@ -11,6 +11,9 @@ class Teapot : public GenericObject {
  public:
   Teapot();
   void loadAttributes(GLuint programId);
+  bool quickIntersectionTest(Intersects &intersect) const  {
+    return true;
+  }
   void drawVerts();
 };
 

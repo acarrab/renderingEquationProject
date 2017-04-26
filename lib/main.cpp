@@ -17,33 +17,6 @@ void keyboardHandler(unsigned char key, int x, int y) {
     break;
   }
 }
-/*
-struct DepthCubeMap {
-  GLuint id;
-  GLuint bufferFBO;
-  std::vector<int> shadow;
-  DepthCubeMap() : id(0), bufferFBO(0), shadow({1024, 1024}){
-    glGenTextures(1, &id);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, id);
-    for (GLuint i = 0; i < 6; i++) {
-      glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT,
-		   shadow[0], shadow[1], 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-    }
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_R, GL_CLAMP_TO_EDGE);
-
-    glGenFrameuffers(1, &bufferFBO);
-    glBindFramebuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthCubemap, 0);
-    glDrawBuffer(GL_NONE);
-    glReadBuffer(GL_NONE);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-  }
-
-};
-*/
 void displayHander() {
   static Shader baseProg("teapotShader");//, shadowMapGenProg("shadowShader");
   static GenericsHandler &gh = GenericsHandler::getInstance();
@@ -52,118 +25,30 @@ void displayHander() {
   static Light l;
 
   static int i = 1;
+  static const int iterations = 1000000;
+  static const float brightFactor = 1.0;
   glClear(GL_DEPTH_BUFFER_BIT);
 
+  if (i < iterations) {
+    if (i == 1)  { lh.next(l, gh); i++; }
+    glUseProgram(baseProg.id);
+    l.loadAttributes(baseProg.id);
+    ph.loadAttributes(baseProg.id);
+    //draw objects
+    for (auto generic : gh) {
+      generic->loadAttributes(baseProg.id);
+      generic->drawVerts();
+    }
+    lh.next(l, gh);
 
-  if (i == 1)  { lh.next(l, gh); i++; }
-  glUseProgram(baseProg.id);
-  l.loadAttributes(baseProg.id);
-  ph.loadAttributes(baseProg.id);
-  //draw objects
-  for (auto generic : gh) {
-    generic->loadAttributes(baseProg.id);
-    generic->drawVerts();
+    glAccum(GL_ACCUM, 1.0/iterations );
+    glAccum(GL_RETURN, iterations/i++);
+    //glFlush();
   }
-  /*glAccum(GL_ACCUM, 1.0);
-  glClear(GL_COLOR_BUFFER_BIT);
-  glAccum(GL_RETURN, 1.0/i++);*/
-  //glFlush();
 
 
 
   glutSwapBuffers();
-    //lh.next();
-
-  /*static LightHandler &lh = LightHandler::getInstance();
-  static PerspectiveHandler &ph = PerspectiveHandler::getInstance();
-  static GenericsHandler &gh = GenericsHandler::getInstance();
-  static ShadowMapper smp;
-  static int w = DataHandler::getInstance().getXmlInt("window/width");
-  static int h = DataHandler::getInstance().getXmlInt("window/height");
-
-  //Actual drawing of the scene
-  static int i = 0, total = 10000;
-  glClear(GL_DEPTH_BUFFER_BIT);
-  glEnable(GL_MULTISAMPLE_ARB);
-  glEnable(GL_DEPTH_TEST);
-  if (i < total) {
-
-    //------------------------------ build depth cube map ------------------------------
-    static DepthCubeMap dcm;
-    glViewport(0, 0, dcm.shadow[0], dcm.shadow[1]);
-    glBindFramebuffer(GL_FRAMEBUFFER, dcm.bufferFBO);
-    glClear(GL_DEPTH_BUFFER_BIT);
-
-    glm::mat4 SP = glm::perspective(glm::radians(90.0f), 1.0, .1f, 20.0f);
-    std::vector<glm::mat4> SMVP;
-    glm::vec3 &lp = lh.position;
-    SMVP.push_back(SP*glm::lookAt(lp,lp + glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
-    SMVP.push_back(SP*glm::lookAt(lp,lp + glm::vec3(-1.0, 0.0, 0.0), glm::vec3(0.0, -1.0, 0.0)));
-    SMVP.push_back(SP*glm::lookAt(lp,lp + glm::vec3(0.0, 1.0, 0.0), glm::vec3(0.0, 0.0, 1.0)));
-    SMVP.push_back(SP*glm::lookAt(lp,lp + glm::vec3(0.0, -1.0, 0.0), glm::vec3(0.0, 0.0, -1.0)));
-    SMVP.push_back(SP*glm::lookAt(lp,lp + glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, -1.0, 0.0)));
-    SMVP.push_back(SP*glm::lookAt(lp,lp + glm::vec3(0.0, 0.0, -1.0), glm::vec3(0.0, -1.0, 0.0)));
-
-
-
-
-
-    //compute the depth mvp
-    glm::mat4 lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f,  near, far);
-    glm::mat4 lightView = glm::lookAt(lh.position,
-				      glm::vec3(0, 1, 0),//look at center of teapot
-				      glm::vec3(0, 1, 0));
-    glm::mat4 depthMVP =  lightProjection * lightView * glm::mat4(1.0);
-
-    //get things we need - only once
-    static GLuint depthShader = ShaderHandler::getInstance().getProgramId("shadowShader");
-    static GLuint depthMVPId = glGetUniformLocation(depthShader, "depthMVP");
-
-    //load program
-    glUseProgram(depthShader);
-
-    //set things for shadow map
-    glViewport(0,0,1024, 1024);
-    glBindTexture(GL_TEXTURE_2D, smp.depthTexture);
-    glBindFramebuffer(GL_FRAMEBUFFER, smp.frameBuffer);
-
-    glClear(GL_DEPTH_BUFFER_BIT);
-    //draw everything
-    glUniformMatrix4fv(depthMVPId, 1, GL_FALSE, &depthMVP[0][0]);
-    for (auto generic : gh) {
-      generic->loadAttributes(depthShader);
-      generic->drawVerts();
-    }
-
-    //clean up things for next step
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glViewport(0, 0, w, h);
-    glBindTexture(GL_TEXTURE_2D, smp.depthTexture);
-
-    glm::mat4 biasMtx(.5, .0, .0, .0,
-		      .0, .5, .0, .0,
-		      .0, .0, .5, .0,
-		      .5, .5, .5, 1.0);
-    glm::mat4 depthBiasMVP = biasMtx * depthMVP;
-    //------------------------------ draw objects ------------------------------
-    glUseProgram(baseProgram);
-    static GLuint depthBiasMVPId = glGetUniformLocation(baseProgram, "depthBiasMVP");
-    static GLuint shadowMapId = glGetUniformLocation(baseProgram, "shadowMap");
-    glUniformMatrix4fv(depthBiasMVPId, 1, GL_FALSE, &depthBiasMVP[0][0]);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, smp.depthTexture);
-    glUniform1i(shadowMapId, 1);
-    //load light
-    lh.loadAttributes(baseProgram);
-    ph.loadAttributes(baseProgram);
-    //draw objects
-    for (auto generic : gh) {
-      generic->loadAttributes(baseProgram);
-      generic->drawVerts();
-    }
-    //lh.next();
-    i++;
-    }*/
 
   glutSwapBuffers();
 

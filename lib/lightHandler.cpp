@@ -1,5 +1,7 @@
 #include "../include/lightHandler.h"
-
+std::ostream & operator<<(std::ostream &os, const glm::vec3 &v) {
+  return os << "<" << v.x << ", " << v.y << ", " << v.z << ">";
+}
 
 void Light::loadAttributes(GLuint programId) {
   GLuint id;
@@ -32,34 +34,33 @@ float LightHandler::phi(int b, int i) {
 }
 
 void LightHandler::nextOnSphere(Light &l) {
-  float az = 2.0 * PI * phi(2, i);
-  float el = asin(phi(3, i/(bounces + 1)));
-  std::cerr << i << ", " << az << ", " << el << std::endl;
+  float az = phi(2, i) * 360;
+  float el = asin(phi(3, i))*360;
 
   //hardcoding
-  l(glm::vec3(0, 7.9, 0),//position
-    glm::vec3(-sin(az) * cos(el), sin(el), cos(az) * cos(el)),//should make this negative only
+  l(glm::vec3(0, 7.0, 0),//position should make this negative only
+    glm::normalize(glm::vec3(-sin(az) * cos(el), sin(el), cos(az) * cos(el))),
     lightColor);
   //incrementing i
   i++;
 }
 
 void LightHandler::nextBounce(Light &l, GenericsHandler &gh) {
-  Intersects intersect;
-  intersect.rp = l.pos;
-  intersect.rd = l.dir;
+  Intersects intersect(l.pos, l.dir);
   for (auto thing : gh) thing->getIntersects(intersect);
-  if (intersect.t < 0) {
-    i += ((bounces + 1) - i % (bounces + 1) - 1);
-    //std::cerr << (i + 1) %(bounces + 1) << std::endl;
+  if (intersect.units < 0) {
+    std::cout << "Dammit: " << l.pos << l.dir << std::endl;
+    beta += ((bounces + 1) - beta % (bounces + 1) - 1);
+  } else {
+    std::cout << "Yay " << l.pos << l.dir << std::endl << intersect.units <<
+      (intersect.units * l.dir + l.pos) << std::endl;
+    intersect.units = -1;
   }
+
 }
 
 void LightHandler::next(Light &l, GenericsHandler &gh) {
-  static int beta = 0;
-
   if (!(beta % (bounces + 1))) nextOnSphere(l);
   else nextBounce(l, gh);
-
   beta  = (++beta) % (bounces + 1);
 }

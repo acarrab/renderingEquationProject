@@ -8,7 +8,7 @@
 class GenericsHandler{
   std::vector<GenericObject *> gens;
   GenericsHandler() {
-    gens.push_back(new Teapot());
+    //gens.push_back(new Teapot());
     for (int i = 0; i < 6; i++) gens.push_back(new Wall());
   }
 public:
