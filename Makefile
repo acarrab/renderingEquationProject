@@ -1,4 +1,5 @@
-CC = clang++ -std=c++11 -I/usr/include -I/usr/X11R6/include -L/usr/lib -L/usr/X11R6/lib -L/usr/lib64 -O3
+CC = clang++ -std=c++11 -O3
+GLFLAGS = -I/usr/include -I/usr/X11R6/include -L/usr/lib -L/usr/X11R6/lib -L/usr/lib64
 # # CC = clang++
 LDFLAGS = -lGLEW -lGL -lGLU -lX11 -lpthread -lXrandr -lglut -lXi -lXmu -lm -lexpat
 CXXFLAGS= -g -W -Wall -std=c++11 -Weffc++ -Wextra -pedantic
@@ -15,10 +16,11 @@ TO_OBJS = $(patsubst $(CPP_LOC)/%.cpp, $(OBJ_LOC)/%.o, $(SOURCES))
 OBJS = $(patsubst $(OBJ_LOC)/main.o, , $(TO_OBJS))
 
 $(OBJ_LOC)/%.o: $(CPP_LOC)/%.cpp $(INCLUDE_LOC)/%.h
+	@mkdir -p build
 	$(CC) $(CXXFLAGS) -c $< -o $@
 
 compile: $(OBJS)
-	$(CC) $(CXXFLAGS) $(CPP_LOC)/main.cpp -o $(EXEC) $(OBJS) $(LDFLAGS)
+	$(CC) $(GLFLAGS) $(CXXFLAGS) $(CPP_LOC)/main.cpp -o $(EXEC) $(OBJS) $(LDFLAGS)
 
 $(EXEC): compile
 	./run

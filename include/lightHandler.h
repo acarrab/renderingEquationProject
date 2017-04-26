@@ -2,37 +2,35 @@
 #define __LIGHTHANDLER_H__
 #include "common.h"
 
-#include "uniformObject.h"
 #include "genericsHandler.h"
 #include "color.h"
 
-class LightHandler : public UniformObject {
-  static constexpr float PI = 3.14159265;
-  glm::vec3 position, direction;
-  int current, iterations, bounces;
-  GenericsHandler &gh;
+struct Light {
+  glm::vec3 pos, dir;
   Color color;
-
-  LightHandler() :
-    UniformObject(),
-    position(dh->getXmlVec3("light/pos")),
-    direction(dh->getXmlVec3("light/dir")),
-    current(0),
-    iterations(dh->getXmlInt("light/iterations")),
-    bounces(2),
-    gh(GenericsHandler::getInstance())
-  {
-    color.Ka = dh->getXmlVec3("light/La");
-    color.Kd = dh->getXmlVec3("light/Ld");
-    color.Ks = dh->getXmlVec3("light/Ls");
-    color.Ns = 0.0;
+  void operator()(const glm::vec3 &p, const glm::vec3 &d, const Color &c) {
+    pos = p; dir = d; color = c;
   }
-public:
-  static LightHandler & getInstance() {
-    static LightHandler instance; return instance;
-  }
+  Light() {}
   void loadAttributes(GLuint programId);
-  void next();
+};
+class LightHandler {
+  static constexpr float PI = 3.14159265;
+  DataHandler &dh;
+  Color lightColor;
+  int bounces, i, beta;
+  float phi(int b, int i);
+  void nextOnSphere(Light &l);
+  void nextBounce(Light &l, GenericsHandler &gh);
+public:
+  LightHandler() : dh(DataHandler::getInstance()), lightColor(), bounces(3), i(0), beta(0)
+  {
+    lightColor.Ka = dh.getXmlVec3("light/La");
+    lightColor.Kd = dh.getXmlVec3("light/Ld");
+    lightColor.Ks = dh.getXmlVec3("light/Ls");
+    lightColor.Ns = 0.0;
+  }
+  void next(Light &l, GenericsHandler &gh);
 };
 
 #endif

@@ -36,9 +36,9 @@ Teapot::Teapot() :
   fromQuads(parsedStuff.f, parsedStuff.v, buffer.data, 0);
 
   //buffer texture coords
-  buffer.addresses.push_back((void *)(buffer.data.size() * sizeof(GLfloat)));
-  buffer.elements.push_back(2);
-  fromQuads(parsedStuff.f, parsedStuff.vt, buffer.data, 1);
+  //buffer.addresses.push_back((void *)(buffer.data.size() * sizeof(GLfloat)));
+  //buffer.elements.push_back(2);
+  //fromQuads(parsedStuff.f, parsedStuff.vt, buffer.data, 1);
 
   //buffer normals
   buffer.addresses.push_back((void *)(buffer.data.size() * sizeof(GLfloat)));

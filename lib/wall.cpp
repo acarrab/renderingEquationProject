@@ -91,12 +91,12 @@ Wall::Wall() :
       }
     }
 
-    buffer.addresses.push_back((void *)(buffer.data.size()*sizeof(GLfloat)));
+    /*buffer.addresses.push_back((void *)(buffer.data.size()*sizeof(GLfloat)));
     buffer.elements.push_back(2);
     for (unsigned int i = 0; i < buffer.vertCount; i++) {
       buffer.data.push_back(1);//temporary
       buffer.data.push_back(1);//temporary
-    }
+    }*/
 
     buffer.addresses.push_back((void *)(buffer.data.size()*sizeof(GLfloat)));
     buffer.elements.push_back(3);

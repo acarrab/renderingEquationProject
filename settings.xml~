@@ -36,7 +36,8 @@
   </perspective>
 
   <teapot>
-    <objFile>resources/teapot/teapot.obj</objFile>
+    <objFile>/home/acarrab/Desktop/renderingEquationProject/resources/teapot/teapot.obj</objFile>
+    <shader>teapotShader</shader>
     <Kd>0.0,1.0,1.0</Kd>
     <Ks>0.0,1.0,1.0</Ks>
     <Ka>.1,.1,.1</Ka>
@@ -44,14 +45,13 @@
   </teapot>
 
   <teapotShader>
-    <vert>resources/teapot/prog.vert</vert>
-    <frag>resources/teapot/prog.frag</frag>
+    <vert>/home/acarrab/Desktop/renderingEquationProject/resources/teapot/prog.vert</vert>
+    <frag>/home/acarrab/Desktop/renderingEquationProject/resources/teapot/prog.frag</frag>
   </teapotShader>
 
   <shadowShader>
-    <vert>resources/shadowMap/prog.vert</vert>
-    <frag>resources/shadowMap/prog.frag</frag>
-    <geom>resources/shadowMap/prog.geom</geom>
+    <vert>/home/acarrab/Desktop/renderingEquationProject/resources/shadowMap/prog.vert</vert>
+    <frag>/home/acarrab/Desktop/renderingEquationProject/resources/shadowMap/prog.frag</frag>
   </shadowShader>
 
   <box>

@@ -20,13 +20,13 @@ struct Color {
   {}
   void loadAttributes(GLuint programId) {
     GLuint id = glGetUniformLocation(programId, "Ka");
-    glUniform3f(id, Ka.r, Ka.g, Ka.b);
+    glUniform4f(id, Ka.r, Ka.g, Ka.b, 0.0);
 
     id = glGetUniformLocation(programId, "Kd");
-    glUniform3f(id, Kd.r, Kd.g, Kd.b);
+    glUniform4f(id, Kd.r, Kd.g, Kd.b, 1.0);
 
     id = glGetUniformLocation(programId, "Ks");
-    glUniform3f(id, Ks.r, Ks.g, Ks.b);
+    glUniform4f(id, Ks.r, Ks.g, Ks.b, 1.0);
 
     id = glGetUniformLocation(programId, "Ns");
     glUniform1f(id, Ns);
