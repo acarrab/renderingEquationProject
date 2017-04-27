@@ -7,13 +7,8 @@
 
 
 class Teapot : public GenericObject {
-  glm::mat4 rtn;
  public:
   Teapot();
-  void loadAttributes(GLuint programId);
-  bool quickIntersectionTest(Intersects &intersect) const  {
-    return true;
-  }
   void drawVerts();
 };
 

@@ -17,43 +17,60 @@ void keyboardHandler(unsigned char key, int x, int y) {
     break;
   }
 }
-void displayHander() {
-  static Shader baseProg("teapotShader");//, shadowMapGenProg("shadowShader");
-  static GenericsHandler &gh = GenericsHandler::getInstance();
-  static PerspectiveHandler &ph = PerspectiveHandler::getInstance();
-  static LightHandler lh;
-  static Light l;
 
-  static int i = 1;
-  static const int iterations = 1000000;
-  static const float brightFactor = 1.0;
-  glClear(GL_DEPTH_BUFFER_BIT);
-
-  if (i < iterations) {
-    if (i == 1)  { lh.next(l, gh); i++; }
-    glUseProgram(baseProg.id);
-    l.loadAttributes(baseProg.id);
-    ph.loadAttributes(baseProg.id);
-    //draw objects
-    for (auto generic : gh) {
-      generic->loadAttributes(baseProg.id);
-      generic->drawVerts();
+class DisplayHandler {
+  DataHandler &dh;
+  GenericsHandler &gh;
+  PerspectiveHandler &ph;
+  LightHandler lh;
+  Light l;
+  int bounces, iterations;
+  float additional, retScalar;
+  Shader baseProg;
+  GLuint lid;
+  int i;
+public:
+  DisplayHandler() :
+    dh(DataHandler::getInstance()),
+    gh(GenericsHandler::getInstance()),
+    ph(PerspectiveHandler::getInstance()),
+    lh(),l(),
+    bounces(dh.getXmlInt("light/bounces")),
+    iterations(dh.getXmlInt("light/iterations")),
+    additional(100.0 / bounces / iterations),
+    retScalar(bounces * iterations / 100.0),
+    baseProg("teapotShader"),
+    lid(glGetUniformLocation(baseProg.id, "lightId")),
+    i(1) {}
+  void displayFrame() {
+    if (i <= iterations) {
+      glUniform1i(lid, 0);
+      for (int j = 0; j < bounces; j++) {
+	glClear(GL_DEPTH_BUFFER_BIT);
+	glUseProgram(baseProg.id);
+	l.loadAttributes(baseProg.id);
+	ph.loadAttributes(baseProg.id);
+	//draw objects
+	for (auto generic : gh) {
+	  generic->loadAttributes(baseProg.id);
+	  generic->drawVerts();
+	}
+	lh.next(l, gh);
+	glAccum(GL_ACCUM, additional);
+	glUniform1i(lid, 1);
+      }
+      lh.next(l, gh);
+      i++;
+      glAccum(GL_RETURN, retScalar/static_cast<float>(i));
+      glutSwapBuffers();
     }
-    lh.next(l, gh);
-
-    glAccum(GL_ACCUM, 1.0/iterations );
-    glAccum(GL_RETURN, iterations/i++);
-    //glFlush();
   }
 
+};
+void display() { static DisplayHandler displayer; displayer.displayFrame(); }
 
 
-  glutSwapBuffers();
-
-  glutSwapBuffers();
-
-}
-void idleHandler() { displayHander(); }
+void idleHandler() { display(); }
 
 
 int main(int argc, char *argv[]) {
@@ -73,11 +90,8 @@ int main(int argc, char *argv[]) {
   glClearAccum(0.0f, 0.0f, 0.0f, 1.0f);
   glClear(GL_ACCUM_BUFFER_BIT);
 
-  /*  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_COLOR, GL_DST_COLOR);//GL_SRC_ALPHA, GL_DST_ALPHA);
-  glBlendEquation(GL_MAX);*/
 
-  glutDisplayFunc(displayHander);
+  glutDisplayFunc(display);
   glutIdleFunc(idleHandler);
   glutKeyboardFunc(keyboardHandler);
   glutMainLoop();

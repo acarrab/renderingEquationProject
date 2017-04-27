@@ -31,5 +31,12 @@ struct Color {
     id = glGetUniformLocation(programId, "Ns");
     glUniform1f(id, Ns);
   }
+  Color& operator*=(Color & a) {
+    Ka = Ka * a.Ka;
+    Kd = Kd * a.Kd;
+    Ks = Ks * a.Ks;
+    Ns = Ns * a.Ns;
+    return *this;
+  }
 };
 #endif

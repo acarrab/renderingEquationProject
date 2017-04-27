@@ -1,7 +1,8 @@
 #include "../include/wall.h"
 int Wall::instance = 0;
 std::vector< std::string > Wall::types({
-    std::string("wallLeft"), std::string("wallRight"), std::string("wallOther")});
+    std::string("left"), std::string("right"), std::string("back"),
+      std::string("floor"), std::string("ceil"), std::string("front")});
 
 //pushes back vert
 std::vector<GLfloat> & operator<<(std::vector<GLfloat> &out,
@@ -19,17 +20,11 @@ std::vector<glm::vec3> & operator<<(std::vector<glm::vec3> &out,
 }
 
 Wall::Wall() :
-  GenericObject(types[std::min(2, instance)]),
-  myInstance(instance),
-  myType(types[std::min(2, instance)]),
-  rtn(glm::rotate(0.0f, glm::vec3(0.0, 1.0, 0.0))),
+  GenericObject("box/" + types[std::min((int)types.size() - 1, instance)]),
+  myType("box/" + types[std::min((int)types.size() - 1, instance)]),
   wallCoords()
 {
-  /*
-  diffuseColor(dh->getXmlVec4(myType+"/diffuse")),
-  specularColor(dh->getXmlVec4(myType+"/specular")),
-  shininess(dh->getXmlFloat(myType+"/shininess")),
-  */
+  myTypeId = instance;
   float w = dh->getXmlFloat("box/width");
   glm::vec3 normal;
   if (instance == 0) {
@@ -70,7 +65,7 @@ Wall::Wall() :
   for (glm::vec3 &coord : wallCoords) coord += glm::vec3(0, 0, center);
   static int divs = dh->getXmlInt("box/rowColNum");
 
-  if (myInstance != 5) {
+  if (myTypeId != 5) {
     buffer.vertCount = divs*divs*2*3;
     buffer.addresses.push_back((void *)0);
     buffer.elements.push_back(3);
@@ -121,14 +116,9 @@ Wall::Wall() :
 			     buffer.verts[5] - buffer.verts[3]);
   instance++;
 }
-void Wall::loadAttributes(GLuint programId)  {
-  GenericObject::loadAttributes(programId);
 
-  GLuint id = glGetUniformLocation(programId, "rotationMtx");
-  glUniformMatrix4fv(id, 1, GL_FALSE, &rtn[0][0]);
-}
 void Wall::drawVerts() {
-  if (myInstance >= 5) return;
+  if (myTypeId >= 5) return;
   glBindBuffer(GL_ARRAY_BUFFER, buffer.id);
   for (unsigned int i = 0; i < buffer.addresses.size(); i++) {
     glEnableVertexAttribArray(i);

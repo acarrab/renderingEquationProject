@@ -4,7 +4,7 @@
 
 #include "dataHandler.h"
 #include "objectHandler.h"
-
+#include "intersects.h"
 #include "color.h"
 
 
@@ -27,29 +27,6 @@ struct BufferData {
   }
 };
 
-class Intersects {
-  static constexpr float precision = .0000001;
-public:
-  //result
-  float units;
-  Color color;
-
-  //input
-  glm::vec3 d, o; // ray direction, ray origin
-  Intersects(const glm::vec3 &rp, const glm::vec3 &rd) :
-    units(10000000.0), color(), d(rd), o(rp)
-  {}
-  void withTri(const glm::vec3 *v, const glm::vec3 &N, const Color &color);
-  void with(const std::vector<glm::vec3> &verts,
-	    const std::vector<glm::vec3> &norms,
-	    const Color &realColor) {
-    //find intersections
-    for (unsigned int i = 0; i < verts.size(); i += 3)
-      withTri(&verts[i], norms[i/3], realColor);
-  }
-};
-
-
 class GenericObject {
 protected:
   static DataHandler *dh;
@@ -58,22 +35,18 @@ protected:
   GenericObject(const std::string &type);
   BufferData buffer;
   Color color;
+  /*
+    | TYPE | Teapot | w_left | w_right | w_back | w_floor | w_ceil | w_front |
+    |------+--------+--------+---------+--------+---------+--------+---------|
+    | ID   |     10 |      0 |       1 |      2 |       3 |      4 |       5 |
+
+  */
+  int myTypeId;
   //inline because only called in one particular place, gets rid of overhead
 public:
   virtual ~GenericObject() {}
-  virtual void loadAttributes(GLuint programId) {
-    color.loadAttributes(programId);
-  }
-  virtual bool quickIntersectionTest(Intersects &intersect) const { return true; }
-  void getIntersects(Intersects &intersect) const {
-    if (quickIntersectionTest(intersect)) {
-      float t = intersect.units;
-      intersect.with(buffer.verts, buffer.norms, color);
-      if (intersect.units <  20000)
-	std::cout << "HIT" << std::endl;
-    }
-  }
-
+  void loadAttributes(GLuint programId);
+  void getIntersects(Intersects &intersect) const;
   virtual void drawVerts() = 0;
 };
 

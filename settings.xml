@@ -20,12 +20,13 @@
 
   <!-- basic light settings -->
   <light>
-    <pos>0,7.8,0</pos>
+    <pos>0,7.0,0</pos>
     <dir>0,-1,0</dir>
     <!-- Set all of the number of radiosity iterations here -->
-    <iterations>20</iterations>
+    <iterations>10000</iterations>
+    <bounces>5</bounces>
     <Ld>1.0,1.0,1.0</Ld>
-    <Ls>0.0,0.0,0.0</Ls>
+    <Ls>1.0,1.0,1.0</Ls>
     <La>1.0,1.0,1.0</La>
   </light>
 
@@ -53,32 +54,53 @@
     <frag>resources/shadowMap/prog.frag</frag>
     <geom>resources/shadowMap/prog.geom</geom>
   </shadowShader>
-
   <box>
     <shader>teapotShader</shader>
-    <rowColNum>1</rowColNum>
+    <rowColNum>20</rowColNum>
     <width>8</width>
     <displace>0</displace>
+    <left>
+      <Kd>1.0,0.0,0.0</Kd>
+      <Ks>1.0,0.0,0.0</Ks>
+      <Ka>0.1,0.1,0.1</Ka>
+      <Ns>10.0</Ns>
+    </left>
+
+    <right>
+      <Kd>0.0,1.0,0.0</Kd>
+      <Ks>0.0,1.0,0.0</Ks>
+      <Ka>0.1,0.1,0.1</Ka>
+      <Ns>10.0</Ns>
+    </right>
+
+
+    <ceil>
+      <Kd>.7,.7,.7</Kd>
+      <Ks>0.0,0.0,0.0</Ks>
+      <Ka>0.1,0.1,0.1</Ka>
+      <Ns>1.0</Ns>
+    </ceil>
+
+    <floor>
+      <Kd>.7,.7,.7</Kd>
+      <Ks>1.0,1.0,1.0</Ks>
+      <Ka>0.1,0.1,0.1</Ka>
+      <Ns>1.0</Ns>
+    </floor>
+
+    <back>
+      <Kd>.7,.7,.7</Kd>
+      <Ks>0.0,0.0,0.0</Ks>
+      <Ka>0.1,0.1,0.1</Ka>
+      <Ns>1.0</Ns>
+    </back>
+
+    <front>
+      <Kd>.7,.7,.7</Kd>
+      <Ks>1.0,1.0,1.0</Ks>
+      <Ka>0.1,0.1,0.1</Ka>
+      <Ns>1.0</Ns>
+    </front>
   </box>
 
-  <wallLeft>
-    <Kd>1.0,0.0,0.0</Kd>
-    <Ks>1.0,0.0,0.0</Ks>
-    <Ka>0.1,0.1,0.1</Ka>
-    <Ns>10.0</Ns>
-  </wallLeft>
-
-  <wallRight>
-    <Kd>0.0,1.0,0.0</Kd>
-    <Ks>0.0,1.0,0.0</Ks>
-    <Ka>0.1,0.1,0.1</Ka>
-    <Ns>10.0</Ns>
-  </wallRight>
-
-  <wallOther>
-    <Kd>1.0,1.0,1.0</Kd>
-    <Ks>0.1,.1,.1</Ks>
-    <Ka>0.1,0.1,0.1</Ka>
-    <Ns>10.0</Ns>
-  </wallOther>
 </Data>

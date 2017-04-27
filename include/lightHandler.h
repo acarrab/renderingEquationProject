@@ -22,8 +22,13 @@ class LightHandler {
   float phi(int b, int i);
   void nextOnSphere(Light &l);
   void nextBounce(Light &l, GenericsHandler &gh);
+  inline void attenuate(Light &l, Intersects &intersect);
 public:
-  LightHandler() : dh(DataHandler::getInstance()), lightColor(), bounces(3), i(0), beta(0)
+  LightHandler() : dh(DataHandler::getInstance()),
+		   lightColor(),
+		   bounces(dh.getXmlInt("light/bounces")),
+		   i(0),
+		   beta(0)
   {
     lightColor.Ka = dh.getXmlVec3("light/La");
     lightColor.Kd = dh.getXmlVec3("light/Ld");

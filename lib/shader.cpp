@@ -1,5 +1,5 @@
 #include "../include/shader.h"
-
+#include <string.h>
 std::string Shader::readFile(const std::string &filePath) {
   std::string content;
   std::ifstream fin(filePath, std::ios::in);
@@ -12,7 +12,9 @@ std::string Shader::readFile(const std::string &filePath) {
 }
 bool Shader::compileShader(GLuint shader, std::string loc) {
   std::cerr << "Compiling: " << loc << std::endl;
-  const GLchar *data = (const GLchar *)readFile(loc).c_str();
+  std::string s = readFile(loc);
+  const GLchar *data = new GLchar[s.length() + 1];
+  strcpy((char *)data, (s.c_str()));
   glShaderSource(shader, 1, &(data), 0);
   glCompileShader(shader);
   GLint compiled = 0;
@@ -25,6 +27,7 @@ bool Shader::compileShader(GLuint shader, std::string loc) {
     std::cerr << "|" << &log[0] << std::endl;
     return false;
   }
+  delete data;
   return true;
 }
 

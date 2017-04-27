@@ -7,30 +7,13 @@ class GenericObject;
 #include "genericObject.h"
 
 
-/*
-Teapot Dimensions:
-  x: (-0.817742, 0.817739)
-  y: (0.025154, 1.37592)
-  z: (-1.46662, 1.28999)
-
-*/
-//4x4 wall
-
 class Wall : public GenericObject {
   static int instance;
   static std::vector< std::string > types;
-  int myInstance;
   std::string myType;
-  glm::mat4 rtn;
-  //should be 3
   std::vector<glm::vec3> wallCoords;
 public:
   Wall();
-  bool quickIntersectionTest(Intersects &intersect) const {
-    std::cout << myInstance << std::endl;
-    return true;
-  }
-  void loadAttributes(GLuint programId);
   void drawVerts();
 };
 
