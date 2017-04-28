@@ -39,8 +39,8 @@
 
   <teapot>
     <objFile>resources/teapot/teapot.obj</objFile>
-    <Kd>0.0,2.0,2.0</Kd>
-    <Ks>0.0,.5,.5</Ks>
+    <Kd>2.0,2.0,1.0</Kd>
+    <Ks>0.5,.5,.2</Ks>
     <Ka>.1,.1,.1</Ka>
     <Ns>10.0</Ns>
   </teapot>
