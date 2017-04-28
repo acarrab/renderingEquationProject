@@ -19,8 +19,15 @@ void PerspectiveHandler::loadAttributes(GLuint programId) {
   tmp = glGetUniformLocation(programId, "cameraPosition");
   glUniform3f(tmp, cameraLoc.x, cameraLoc.y, cameraLoc.z);
 
+  float jitter[3] = {static_cast<float>(rand() % 1000)/2000 - .25f,
+		     static_cast<float>(rand() % 1000)/2000 - .25f,
+		     static_cast<float>(rand() % 1000)/2000 - .25f};
+
   tmp = glGetUniformLocation(programId, "cameraLookAt");
-  glUniform3f(tmp, cameraLookAt.x, cameraLookAt.y, cameraLookAt.z);
+  glUniform3f(tmp,
+	      cameraLookAt.x  + jitter[0],
+	      cameraLookAt.y + jitter[1],
+	      cameraLookAt.z + jitter[2]);
 
   tmp = glGetUniformLocation(programId, "projectionMtx");
   glUniformMatrix4fv(tmp, 1, GL_FALSE, &projection[0][0]);

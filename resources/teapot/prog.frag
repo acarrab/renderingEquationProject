@@ -15,7 +15,7 @@ uniform float Ns;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Type Info ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 uniform int myTypeId;
-uniform bool lightId;
+uniform int lightId;
 
 void main() {
 
@@ -23,29 +23,20 @@ void main() {
     // |------+--------+--------+---------+--------+---------+--------+---------|
     // | ID   |     10 |      0 |       1 |      2 |       3 |      4 |       5 |
 
+    vec3 P, N, L, V, H;
 
     if (myTypeId == 4 && distance(vec2(0,0), pos.xz) < 1.0) {
 	color = vec4(1.0, 1.0, 1.0, 1.0);
 	return;
     }
     float dist = distance(pos, lightPosition);
-    vec3 toLight = normalize(lightPosition - pos);
-    vec3 toCam = normalize(cameraPosition - pos);
-
-    //perfect reflectance vector
-    vec3 refl = reflect(-toLight, norm);
-
-
-
-    vec4 brdf = Ld * Kd * max(0.0,dot(toLight, norm)) * 2.0 / (dist);
-    if (!lightId) brdf *= 0.0;
-    vec4 diffuse = brdf;
-    vec4 specular;
-
-    float specularScalar = pow(max(0.0, dot(refl, toCam)), Ns);
-    specular = Ks * Ls * specularScalar;
-
-    specular = vec4(0,0,0,0);
+    P = pos;
+    N = normalize(norm);
+    L = normalize(lightPosition - P);
+    V = normalize(cameraPosition - P);
+    H = normalize(L + V);
+    vec4 diffuse = Ld* Kd * max(dot(N, L), 0.0) * 2.0 / dist;
+    vec4 specular = Ls * Ks * pow(max(dot(H, N), 0.0), Ns) * 2.0 / dist;
     color = diffuse + specular;
-    color.a = 1.0;
+    if (lightId == 0 || lightId == 1) color *= dist*dist;
 }

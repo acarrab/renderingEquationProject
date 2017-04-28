@@ -27,7 +27,6 @@ class DisplayHandler {
   int bounces, iterations;
   float additional, retScalar;
   Shader baseProg;
-  GLuint lid;
   int i;
 public:
   DisplayHandler() :
@@ -40,12 +39,11 @@ public:
     additional(100.0 / bounces / iterations),
     retScalar(bounces * iterations / 100.0),
     baseProg("teapotShader"),
-    lid(glGetUniformLocation(baseProg.id, "lightId")),
     i(1) {}
   void displayFrame() {
     if (i <= iterations) {
-      glUniform1i(lid, 0);
       for (int j = 0; j < bounces; j++) {
+	lh.next(l, gh, baseProg.id);
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glUseProgram(baseProg.id);
 	l.loadAttributes(baseProg.id);
@@ -55,14 +53,12 @@ public:
 	  generic->loadAttributes(baseProg.id);
 	  generic->drawVerts();
 	}
-	lh.next(l, gh);
 	glAccum(GL_ACCUM, additional);
-	glUniform1i(lid, 1);
       }
-      lh.next(l, gh);
-      i++;
+      glFlush();
       glAccum(GL_RETURN, retScalar/static_cast<float>(i));
       glutSwapBuffers();
+      i++;
     }
   }
 

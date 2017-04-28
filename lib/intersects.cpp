@@ -2,7 +2,7 @@
 
 void Intersects::withTri(const glm::vec3 *v,
 			 const glm::vec3 &N) {
-  static float epsilon = .000001;
+  static float epsilon = .0000001;
   glm::vec3 e1 = v[1] - v[0];
   glm::vec3 e2 = v[2] - v[0];
 

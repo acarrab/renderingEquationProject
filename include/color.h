@@ -38,5 +38,12 @@ struct Color {
     Ns = Ns * a.Ns;
     return *this;
   }
+  Color& operator*=(float f) {
+    Ka *= f;
+    Kd *= f;
+    Ks *= f;
+    Ns *= f;
+    return *this;
+  }
 };
 #endif

@@ -3,7 +3,8 @@
   <window>
     <x>100</x>
     <y>100</y>
-
+    <width>640</width>
+    <height>512</height>
     <width>1280</width>
     <height>1024</height>
 
@@ -23,7 +24,7 @@
     <pos>0,7.0,0</pos>
     <dir>0,-1,0</dir>
     <!-- Set all of the number of radiosity iterations here -->
-    <iterations>10000</iterations>
+    <iterations>100</iterations>
     <bounces>5</bounces>
     <Ld>1.0,1.0,1.0</Ld>
     <Ls>1.0,1.0,1.0</Ls>
@@ -38,8 +39,8 @@
 
   <teapot>
     <objFile>resources/teapot/teapot.obj</objFile>
-    <Kd>0.0,1.0,1.0</Kd>
-    <Ks>0.0,1.0,1.0</Ks>
+    <Kd>0.0,2.0,2.0</Kd>
+    <Ks>0.0,.5,.5</Ks>
     <Ka>.1,.1,.1</Ka>
     <Ns>10.0</Ns>
   </teapot>
@@ -56,47 +57,47 @@
   </shadowShader>
   <box>
     <shader>teapotShader</shader>
-    <rowColNum>20</rowColNum>
+    <rowColNum>50</rowColNum>
     <width>8</width>
     <displace>0</displace>
     <left>
       <Kd>1.0,0.0,0.0</Kd>
-      <Ks>1.0,0.0,0.0</Ks>
+      <Ks>.1,0.0,0.0</Ks>
       <Ka>0.1,0.1,0.1</Ka>
       <Ns>10.0</Ns>
     </left>
 
     <right>
       <Kd>0.0,1.0,0.0</Kd>
-      <Ks>0.0,1.0,0.0</Ks>
+      <Ks>0.0,.1,0.0</Ks>
       <Ka>0.1,0.1,0.1</Ka>
       <Ns>10.0</Ns>
     </right>
 
 
     <ceil>
-      <Kd>.7,.7,.7</Kd>
+      <Kd>.9,.9,.9</Kd>
       <Ks>0.0,0.0,0.0</Ks>
       <Ka>0.1,0.1,0.1</Ka>
       <Ns>1.0</Ns>
     </ceil>
 
     <floor>
-      <Kd>.7,.7,.7</Kd>
-      <Ks>1.0,1.0,1.0</Ks>
+      <Kd>.9,.9,.9</Kd>
+      <Ks>.1,.1,.1</Ks>
       <Ka>0.1,0.1,0.1</Ka>
       <Ns>1.0</Ns>
     </floor>
 
     <back>
-      <Kd>.7,.7,.7</Kd>
+      <Kd>.9,.9,.9</Kd>
       <Ks>0.0,0.0,0.0</Ks>
       <Ka>0.1,0.1,0.1</Ka>
       <Ns>1.0</Ns>
     </back>
 
     <front>
-      <Kd>.7,.7,.7</Kd>
+      <Kd>.9,.9,.9</Kd>
       <Ks>1.0,1.0,1.0</Ks>
       <Ka>0.1,0.1,0.1</Ka>
       <Ns>1.0</Ns>
