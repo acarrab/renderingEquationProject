@@ -38,7 +38,11 @@ void main() {
     vec4 diffuse = Ld* Kd * max(dot(N, L), 0.0) * 2.0 / dist;
     vec4 specular = Ls * Ks * pow(max(dot(H, N), 0.0), Ns) * 2.0 / dist;
     color = diffuse + specular;
-    if (lightId == 0 || lightId == 1) color *= dist*dist;
+
+    if (lightId == 0 || lightId == 1) {
+	dist = min(dist, 8.0);
+	color *= pow((8.0 - dist), 2.5);
+    }
     if (lightId >= 2) color /= 2;
     if (lightId == 0) color *= 2;
 }
