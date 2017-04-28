@@ -39,4 +39,6 @@ void main() {
     vec4 specular = Ls * Ks * pow(max(dot(H, N), 0.0), Ns) * 2.0 / dist;
     color = diffuse + specular;
     if (lightId == 0 || lightId == 1) color *= dist*dist;
+    if (lightId >= 2) color /= 2;
+    if (lightId == 0) color *= 2;
 }

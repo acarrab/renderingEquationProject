@@ -39,7 +39,7 @@ void LightHandler::nextOnSphere(Light &l, GLuint &programId) {
   //lets make this thing shift downwards - later
   float el = asin(phi(3, i)) * 4.5;//3.14159265;
 
-  l(glm::vec3(0, 7.0, 0.3),//position should make this negative only
+  l(glm::vec3(0, 7.0, 0.3) + .9f * glm::normalize(glm::vec3(-sin(az) * cos(el), -sin(el), cos(az) * cos(el))),//position should make this negative only
     glm::normalize(glm::vec3(-sin(az) * cos(el), -sin(el), cos(az) * cos(el))),
     lightColor);
   //incrementing i
@@ -48,7 +48,6 @@ void LightHandler::nextOnSphere(Light &l, GLuint &programId) {
 
 void LightHandler::nextBounce(Light &l, GenericsHandler &gh, GLuint &programId) {
   GLuint lid = glGetUniformLocation(programId, "lightId");
-
   Intersects intersect(l.pos, l.dir);
 
   for (auto thing : gh) thing->getIntersects(intersect);
