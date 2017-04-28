@@ -2,7 +2,7 @@ CC = clang++ -std=c++11 -O3
 GLFLAGS = -I/usr/include -I/usr/X11R6/include -L/usr/lib -L/usr/X11R6/lib -L/usr/lib64
 # # CC = clang++
 LDFLAGS = -lGLEW -lGL -lGLU -lX11 -lpthread -lXrandr -lglut -lXi -lXmu -lm -lexpat
-CXXFLAGS= -g -W -Wall -std=c++11 -Weffc++ -Wextra -pedantic
+CXXFLAGS= -g -W -Wall -std=c++11 -Wextra -pedantic
 
 OBJ_LOC = ./build
 INCLUDE_LOC = ./include
