@@ -1,0 +1,4 @@
+#+TITLE: Cornell Box and Teapot Rendering
+#+AUTHOR: Angelo Carrabba
+* Current Teapot
+[[currentTeapot.png]]
